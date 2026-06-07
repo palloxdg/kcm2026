@@ -167,13 +167,20 @@
     }
     .close-btn:hover { background: var(--rose-border); transform: scale(1.08); }
 
-    /* ─── Lottie container ─── */
+    /* ─── Lottie + gift card overlap wrapper ─── */
+    .reveal-area {
+      display: grid;
+      place-items: center;
+      width: min(380px, 85vw);
+      margin-bottom: 0.5rem;
+    }
+    .reveal-area > * { grid-column: 1; grid-row: 1; }
+
     .lottie-container {
-      width: min(300px, 70vw);
-      height: min(300px, 70vw);
+      width: min(380px, 85vw);
+      height: min(380px, 85vw);
       opacity: 0; transform: scale(0.5);
       transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
-      margin-bottom: 1rem;
     }
     .lottie-container.show { opacity: 1; transform: scale(1); }
     .lottie-container.hide {
@@ -270,13 +277,14 @@
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Gift reveal">
   <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
 
-  <!-- Lottie animation container -->
-  <div class="lottie-container" id="lottieContainer"></div>
-
-  <div class="gift-card" id="giftCard">
-    <div class="gift-day-badge" id="dayBadge">Day 1</div>
-    <div class="gift-label" id="giftLabel">—</div>
-    <a href="#" id="giftLink" class="gift-link" target="_blank" rel="noopener noreferrer">Open your gift</a>
+  <!-- Lottie + gift card in same grid cell so they overlap -->
+  <div class="reveal-area">
+    <div class="lottie-container" id="lottieContainer"></div>
+    <div class="gift-card" id="giftCard">
+      <div class="gift-day-badge" id="dayBadge">Day 1</div>
+      <div class="gift-label" id="giftLabel">—</div>
+      <a href="#" id="giftLink" class="gift-link" target="_blank" rel="noopener noreferrer">Open your gift</a>
+    </div>
   </div>
 </div>
 
@@ -337,21 +345,32 @@
   const closeBtn      = document.getElementById('closeBtn');
 
   // ─── Load lottie animation once ───────────────────────────────────────────────
-  const anim = lottie.loadAnimation({
-    container: lottieContainer,
-    renderer: 'svg',
-    loop: false,
-    autoplay: false,
-    path: './gift-box.json'
-  });
+  let anim = null;
+  let animReady = false;
 
-  anim.addEventListener('complete', () => {
-    lottieContainer.classList.add('hide');
-    setTimeout(() => {
-      lottieContainer.classList.remove('show', 'hide');
-      giftCard.classList.add('show');
-    }, 380);
-  });
+  fetch('./gift-box.json')
+    .then(r => r.json())
+    .then(animData => {
+      anim = lottie.loadAnimation({
+        container: lottieContainer,
+        renderer: 'svg',
+        loop: false,
+        autoplay: false,
+        animationData: animData
+      });
+      animReady = true;
+      anim.addEventListener('complete', () => {
+        lottieContainer.classList.add('hide');
+        setTimeout(() => {
+          lottieContainer.classList.remove('show', 'hide');
+          giftCard.classList.add('show');
+        }, 100);
+      });
+    })
+    .catch(err => {
+      console.warn('gift-box.json failed to load:', err);
+      animReady = false;
+    });
 
   // ─── Build grid ───────────────────────────────────────────────────────────────
   const opened = getOpened();
@@ -385,13 +404,18 @@
     giftCard.classList.remove('show');
     overlay.classList.add('visible');
 
-    anim.stop();
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        lottieContainer.classList.add('show');
-        anim.play();
-      }, 80);
-    });
+    if (animReady && anim) {
+      anim.stop();
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          lottieContainer.classList.add('show');
+          anim.play();
+        }, 80);
+      });
+    } else {
+      // Animation not available — show gift card directly
+      setTimeout(() => giftCard.classList.add('show'), 300);
+    }
   }
 
   // ─── Close ────────────────────────────────────────────────────────────────────
@@ -400,7 +424,7 @@
     setTimeout(() => {
       giftCard.classList.remove('show');
       lottieContainer.classList.remove('show', 'hide');
-      anim.stop();
+      if (anim) anim.stop();
     }, 350);
   }
 
