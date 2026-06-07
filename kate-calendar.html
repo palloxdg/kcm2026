@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kate Celebration Month</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose-bg:      #FDF0F4;
+      --rose-page:    #FAE8EF;
+      --rose-light:   #FBEAF0;
+      --rose-border:  #F4C0D1;
+      --rose-mid:     #ED93B1;
+      --rose-deep:    #D4537E;
+      --rose-dark:    #7B2D42;
+      --rose-darker:  #5C1F30;
+      --gold-bg:      #B8860B;
+      --gold-light:   #FFF8DC;
+      --gold-border:  #DAA520;
+      --gold-hover:   #C99B20;
+      --overlay-bg:   rgba(253, 232, 239, 0.94);
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      min-height: 100vh;
+      background: var(--rose-page);
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(212,83,126,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 85% 80%, rgba(212,83,126,0.05) 0%, transparent 45%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Lato', sans-serif;
+      padding: 1.5rem;
+    }
+
+    .page-wrapper { width: 100%; max-width: 1000px; }
+
+    /* ─── Ornamental frame ─── */
+    .cal-frame {
+      background: var(--rose-bg);
+      border: 1.5px solid var(--rose-deep);
+      border-radius: 14px;
+      padding: 2.25rem 2.5rem 2.5rem;
+      outline: 6px solid var(--rose-bg);
+      box-shadow:
+        0 0 0 8px var(--rose-border),
+        0 0 0 9px var(--rose-bg),
+        0 12px 48px rgba(123,45,66,0.10);
+    }
+
+    /* ─── Header ─── */
+    .cal-header { text-align: center; margin-bottom: 1.75rem; }
+
+    .ornament-top {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin-bottom: 0.6rem;
+    }
+
+    .ornament-line {
+      flex: 1; max-width: 160px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--rose-border), transparent);
+    }
+
+    .cal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(22px, 3.5vw, 34px);
+      font-weight: 400; font-style: italic;
+      color: var(--rose-dark);
+      letter-spacing: 0.04em;
+      margin: 0.4rem 0 0.7rem;
+    }
+
+    .ornament-divider {
+      display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 0.2rem;
+    }
+    .divider-line { width: 80px; height: 1px; background: var(--rose-border); }
+    .divider-dot  { width: 4px; height: 4px; border-radius: 50%; background: var(--rose-deep); }
+    .divider-diamond { width: 6px; height: 6px; border: 1px solid var(--rose-deep); transform: rotate(45deg); }
+
+    /* ─── Calendar grid ─── */
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .door {
+      aspect-ratio: 1;
+      border-radius: 9px;
+      background: var(--rose-light);
+      border: 1.5px solid var(--rose-border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(15px, 2vw, 22px);
+      font-weight: 400; color: var(--rose-dark);
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      user-select: none; position: relative; overflow: hidden;
+    }
+    .door::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.4) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .door:hover {
+      transform: translateY(-3px) scale(1.03);
+      background: #F7D6E3; border-color: var(--rose-mid);
+      box-shadow: 0 6px 18px rgba(123,45,66,0.18);
+    }
+    .door:active { transform: translateY(-1px) scale(1.01); }
+
+    .door.golden {
+      background: var(--gold-bg); color: var(--gold-light);
+      border: 2px solid var(--gold-border);
+      font-size: clamp(13px, 1.8vw, 18px); text-align: center; line-height: 1.3;
+    }
+    .door.golden::before {
+      background: radial-gradient(circle at 50% 0%, rgba(255,230,100,0.25) 0%, transparent 70%);
+    }
+    .door.golden:hover {
+      background: var(--gold-hover);
+      box-shadow: 0 6px 20px rgba(184,134,11,0.45);
+    }
+    .door.opened { opacity: 0.5; }
+    .door.opened::after {
+      content: '✓'; position: absolute; bottom: 4px; right: 6px;
+      font-size: 9px; color: var(--rose-deep); font-family: 'Lato', sans-serif;
+    }
+    .door.opened.golden::after { color: var(--gold-light); }
+
+    @keyframes doorFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .door { animation: doorFadeIn 0.4s ease both; }
+
+    /* ─── Overlay ─── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: var(--overlay-bg);
+      backdrop-filter: blur(6px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+    .overlay.visible { opacity: 1; pointer-events: all; }
+
+    .close-btn {
+      position: fixed; top: 1.5rem; right: 1.5rem;
+      background: var(--rose-light); border: 1.5px solid var(--rose-deep);
+      color: var(--rose-dark); width: 40px; height: 40px; border-radius: 50%;
+      font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.15s; font-family: 'Lato', sans-serif;
+    }
+    .close-btn:hover { background: var(--rose-border); transform: scale(1.08); }
+
+    /* ─── Gift box CSS animation ─── */
+    .gift-anim {
+      position: relative;
+      width: 160px; height: 190px;
+      opacity: 0; transform: scale(0.5);
+      transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+      margin-bottom: 1rem;
+    }
+    .gift-anim.show { opacity: 1; transform: scale(1); }
+    .gift-anim.hide {
+      opacity: 0; transform: scale(0.85);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    /* Box body */
+    .box-body {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 120px; height: 100px;
+      background: var(--rose-deep);
+      border-radius: 4px 4px 6px 6px;
+      overflow: hidden;
+    }
+    .ribbon-h {
+      position: absolute; top: 50%; left: 0; right: 0; height: 18px;
+      background: var(--gold-border); transform: translateY(-50%);
+    }
+    .ribbon-v {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 18px;
+      background: var(--gold-border); transform: translateX(-50%);
+    }
+
+    /* Lid */
+    .box-lid {
+      position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+      width: 130px; height: 28px;
+      background: var(--rose-darker);
+      border-radius: 4px;
+      transform-origin: center bottom;
+    }
+    .lid-ribbon-h {
+      position: absolute; top: 50%; left: 0; right: 0; height: 14px;
+      background: var(--gold-border); transform: translateY(-50%);
+    }
+    .lid-ribbon-v {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 14px;
+      background: var(--gold-border); transform: translateX(-50%);
+    }
+
+    /* Bow */
+    .bow {
+      position: absolute; bottom: 127px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 30px;
+    }
+    .bow-left, .bow-right {
+      position: absolute; bottom: 0; width: 26px; height: 22px;
+      background: var(--gold-border); border-radius: 50% 50% 0 0;
+    }
+    .bow-left  { left: 0;    transform: rotate(-20deg); transform-origin: bottom right; }
+    .bow-right { right: 0;   transform: rotate(20deg);  transform-origin: bottom left; }
+    .bow-center {
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--gold-hover); border: 2px solid var(--gold-border);
+    }
+
+    /* Lid pop animation */
+    @keyframes lidPop {
+      0%   { transform: translateX(-50%) translateY(0)    rotate(0deg);   opacity: 1; }
+      20%  { transform: translateX(-50%) translateY(-10px) rotate(-5deg); opacity: 1; }
+      60%  { transform: translateX(-70%) translateY(-70px) rotate(-25deg);opacity: 1; }
+      100% { transform: translateX(-90%) translateY(-90px) rotate(-40deg);opacity: 0; }
+    }
+    @keyframes bowPop {
+      0%   { transform: translateX(-50%) translateY(0)     scale(1);   opacity: 1; }
+      40%  { transform: translateX(-60%) translateY(-55px) scale(1.1); opacity: 1; }
+      100% { transform: translateX(-80%) translateY(-80px) scale(0.8); opacity: 0; }
+    }
+
+    .box-lid.popping { animation: lidPop 0.7s ease-in 0.6s both; }
+    .bow.popping     { animation: bowPop 0.7s ease-in 0.6s both; }
+
+    /* Sparkles */
+    .sparkles { position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%); }
+
+    @keyframes spark1 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate(-55px,-80px) scale(1.2)} }
+    @keyframes spark2 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate(-20px,-95px) scale(1)}   }
+    @keyframes spark3 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate( 20px,-95px) scale(1.3)} }
+    @keyframes spark4 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate( 55px,-80px) scale(1)}   }
+    @keyframes spark5 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate(-70px,-50px) scale(0.8)} }
+    @keyframes spark6 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate( 70px,-50px) scale(1.1)} }
+    @keyframes spark7 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate(-40px,-110px)scale(0.9)} }
+    @keyframes spark8 { 0%{opacity:0;transform:translate(0,0)    scale(0)} 30%{opacity:1} 100%{opacity:0;transform:translate( 40px,-110px)scale(1.2)} }
+
+    .spark {
+      position: absolute; border-radius: 50%;
+      width: 8px; height: 8px;
+    }
+    .spark.s1{background:var(--gold-border); animation: spark1 0.9s ease-out 1.0s both;}
+    .spark.s2{background:var(--rose-border); width:6px;height:6px; animation: spark2 0.9s ease-out 1.1s both;}
+    .spark.s3{background:var(--gold-light);  animation: spark3 0.9s ease-out 1.05s both;}
+    .spark.s4{background:var(--rose-mid);    width:7px;height:7px; animation: spark4 0.9s ease-out 1.15s both;}
+    .spark.s5{background:var(--gold-border); width:5px;height:5px; animation: spark5 0.9s ease-out 1.2s  both;}
+    .spark.s6{background:var(--rose-light);  width:9px;height:9px; animation: spark6 0.9s ease-out 1.0s  both;}
+    .spark.s7{background:var(--gold-light);  width:6px;height:6px; animation: spark7 0.9s ease-out 1.1s  both;}
+    .spark.s8{background:var(--rose-border); animation: spark8 0.9s ease-out 1.15s both;}
+
+    /* Star shapes inside box */
+    @keyframes starFloat {
+      0%   { opacity:0; transform:translateY(20px) scale(0); }
+      40%  { opacity:1; transform:translateY(-10px) scale(1.2); }
+      100% { opacity:0; transform:translateY(-40px) scale(0.8); }
+    }
+    .star-pop {
+      position: absolute; font-size: 18px; color: var(--gold-border);
+      bottom: 105px; animation: starFloat 1s ease-out 1.0s both;
+    }
+    .star-pop.s2 { left: 45%;  font-size: 14px; animation-delay: 1.2s; color: var(--rose-border); }
+    .star-pop.s3 { left: 60%;  font-size: 20px; animation-delay: 1.1s; }
+
+    /* ─── Gift card ─── */
+    .gift-card {
+      opacity: 0; transform: translateY(20px) scale(0.97);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      pointer-events: none;
+      background: var(--rose-bg);
+      border: 1.5px solid var(--rose-deep);
+      border-radius: 14px;
+      padding: 1.75rem 2.25rem; text-align: center;
+      max-width: 420px; width: 88vw;
+      box-shadow:
+        0 0 0 5px var(--rose-bg),
+        0 0 0 6.5px var(--rose-border),
+        0 0 0 7.5px var(--rose-bg),
+        0 16px 40px rgba(123,45,66,0.12);
+    }
+    .gift-card.show { opacity:1; transform:translateY(0) scale(1); pointer-events:all; }
+
+    .gift-day-badge {
+      font-size: 11px; font-weight: 300; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--rose-deep); margin-bottom: 0.65rem;
+    }
+    .gift-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(17px,4vw,22px); font-weight: 400;
+      color: var(--rose-dark); line-height: 1.5; margin-bottom: 1.4rem;
+    }
+    .gift-link {
+      display: inline-block; background: var(--rose-deep); color: #FFF0F4;
+      padding: 0.65rem 1.8rem; border-radius: 40px; text-decoration: none;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.06em;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .gift-link:hover { background: var(--rose-darker); transform: translateY(-2px); }
+    .gift-link.hidden { display: none; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 600px) {
+      body { padding: 0.75rem; }
+      .cal-frame { padding: 1.25rem 1rem 1.5rem; }
+      .cal-grid { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+  <div class="cal-frame">
+    <div class="cal-header">
+      <div class="ornament-top">
+        <div class="ornament-line"></div>
+        <svg width="22" height="30" viewBox="0 0 22 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M11 2C9 5.5 5.5 6.5 5.5 10.5c0 3.1 2.5 5.5 5.5 5.5s5.5-2.4 5.5-5.5c0-4-3.5-5-5.5-8.5z" fill="#F4C0D1" stroke="#D4537E" stroke-width="0.8"/>
+          <line x1="11" y1="16" x2="11" y2="29" stroke="#D4537E" stroke-width="0.8"/>
+          <path d="M11 22 C9 20 6.5 20.5 6.5 20.5" stroke="#D4537E" stroke-width="0.8" stroke-linecap="round"/>
+          <path d="M11 25 C13 23 15.5 23.5 15.5 23.5" stroke="#D4537E" stroke-width="0.8" stroke-linecap="round"/>
+        </svg>
+        <svg width="60" height="16" viewBox="0 0 60 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line x1="0" y1="8" x2="22" y2="8" stroke="#F4C0D1" stroke-width="0.8"/>
+          <circle cx="30" cy="8" r="4" fill="none" stroke="#D4537E" stroke-width="0.8"/>
+          <circle cx="30" cy="8" r="1.5" fill="#D4537E"/>
+          <line x1="38" y1="8" x2="60" y2="8" stroke="#F4C0D1" stroke-width="0.8"/>
+        </svg>
+        <svg width="22" height="30" viewBox="0 0 22 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="transform:scaleX(-1)">
+          <path d="M11 2C9 5.5 5.5 6.5 5.5 10.5c0 3.1 2.5 5.5 5.5 5.5s5.5-2.4 5.5-5.5c0-4-3.5-5-5.5-8.5z" fill="#F4C0D1" stroke="#D4537E" stroke-width="0.8"/>
+          <line x1="11" y1="16" x2="11" y2="29" stroke="#D4537E" stroke-width="0.8"/>
+          <path d="M11 22 C9 20 6.5 20.5 6.5 20.5" stroke="#D4537E" stroke-width="0.8" stroke-linecap="round"/>
+          <path d="M11 25 C13 23 15.5 23.5 15.5 23.5" stroke="#D4537E" stroke-width="0.8" stroke-linecap="round"/>
+        </svg>
+        <div class="ornament-line"></div>
+      </div>
+      <h1 class="cal-title">Kate Celebration Month</h1>
+      <div class="ornament-divider">
+        <div class="divider-line"></div>
+        <div class="divider-dot"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-dot"></div>
+        <div class="divider-line"></div>
+      </div>
+    </div>
+
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Gift reveal">
+  <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+
+  <!-- CSS gift box animation -->
+  <div class="gift-anim" id="giftAnim">
+    <div class="sparkles">
+      <span class="spark s1"></span><span class="spark s2"></span>
+      <span class="spark s3"></span><span class="spark s4"></span>
+      <span class="spark s5"></span><span class="spark s6"></span>
+      <span class="spark s7"></span><span class="spark s8"></span>
+    </div>
+    <span class="star-pop">★</span>
+    <span class="star-pop s2">✦</span>
+    <span class="star-pop s3">★</span>
+    <div class="bow" id="bow">
+      <div class="bow-left"></div>
+      <div class="bow-right"></div>
+      <div class="bow-center"></div>
+    </div>
+    <div class="box-lid" id="boxLid">
+      <div class="lid-ribbon-h"></div>
+      <div class="lid-ribbon-v"></div>
+    </div>
+    <div class="box-body">
+      <div class="ribbon-v"></div>
+      <div class="ribbon-h"></div>
+    </div>
+  </div>
+
+  <div class="gift-card" id="giftCard">
+    <div class="gift-day-badge" id="dayBadge">Day 1</div>
+    <div class="gift-label" id="giftLabel">—</div>
+    <a href="#" id="giftLink" class="gift-link" target="_blank" rel="noopener noreferrer">Open your gift</a>
+  </div>
+</div>
+
+<script>
+  // ─── Gift data ────────────────────────────────────────────────────────────────
+  // Set url to "#" for doors without a link yet — button will be hidden.
+  const gifts = [
+    { label: "🐴 Horse Riding Experience",           url: "https://katalogmarzen.pl" },  // 1
+    { label: "A surprise awaits you...",             url: "#" },  // 2
+    { label: "A surprise awaits you...",             url: "#" },  // 3
+    { label: "A surprise awaits you...",             url: "#" },  // 4
+    { label: "A surprise awaits you...",             url: "#" },  // 5
+    { label: "A surprise awaits you...",             url: "#" },  // 6
+    { label: "A surprise awaits you...",             url: "#" },  // 7
+    { label: "A surprise awaits you...",             url: "#" },  // 8
+    { label: "A surprise awaits you...",             url: "#" },  // 9
+    { label: "A surprise awaits you...",             url: "#" },  // 10
+    { label: "A surprise awaits you...",             url: "#" },  // 11
+    { label: "A surprise awaits you...",             url: "#" },  // 12
+    { label: "A surprise awaits you...",             url: "#" },  // 13
+    { label: "A surprise awaits you...",             url: "#" },  // 14
+    { label: "A surprise awaits you...",             url: "#" },  // 15
+    { label: "A surprise awaits you...",             url: "#" },  // 16
+    { label: "A surprise awaits you...",             url: "#" },  // 17
+    { label: "A surprise awaits you...",             url: "#" },  // 18
+    { label: "A surprise awaits you...",             url: "#" },  // 19
+    { label: "A surprise awaits you...",             url: "#" },  // 20
+    { label: "A surprise awaits you...",             url: "#" },  // 21
+    { label: "A surprise awaits you...",             url: "#" },  // 22
+    { label: "A surprise awaits you...",             url: "#" },  // 23
+    { label: "A surprise awaits you...",             url: "#" },  // 24
+    { label: "A surprise awaits you...",             url: "#" },  // 25
+    { label: "A surprise awaits you...",             url: "#" },  // 26
+    { label: "🏎️ Supercar Driving Experience",       url: "https://super-cars.pl" },     // 27
+    { label: "A surprise awaits you...",             url: "#" },  // 28
+    { label: "A surprise awaits you...",             url: "#" },  // 29
+    { label: "🐴 A Wild Horse in Your Name",         url: "#" },  // 30 — CWHF PDF goes here
+  ];
+
+  // ─── Persistence ──────────────────────────────────────────────────────────────
+  const STORAGE_KEY = 'kate_nov_opened';
+  function getOpened() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+  }
+  function markOpened(day) {
+    const o = getOpened();
+    if (!o.includes(day)) { o.push(day); localStorage.setItem(STORAGE_KEY, JSON.stringify(o)); }
+  }
+
+  // ─── DOM refs ─────────────────────────────────────────────────────────────────
+  const grid     = document.getElementById('calGrid');
+  const overlay  = document.getElementById('overlay');
+  const giftAnim = document.getElementById('giftAnim');
+  const boxLid   = document.getElementById('boxLid');
+  const bow      = document.getElementById('bow');
+  const giftCard = document.getElementById('giftCard');
+  const giftLabel= document.getElementById('giftLabel');
+  const giftLink = document.getElementById('giftLink');
+  const dayBadge = document.getElementById('dayBadge');
+  const closeBtn = document.getElementById('closeBtn');
+
+  let animTimer = null;
+
+  // ─── Build grid ───────────────────────────────────────────────────────────────
+  const opened = getOpened();
+  for (let i = 1; i <= 30; i++) {
+    const door = document.createElement('div');
+    door.className = 'door'
+      + (i === 30 ? ' golden' : '')
+      + (opened.includes(i) ? ' opened' : '');
+    door.style.animationDelay = `${(i - 1) * 22}ms`;
+    door.innerHTML = i === 30
+      ? `<span style="display:flex;align-items:center;gap:4px;"><span style="font-size:0.65em">★</span><span>30</span><span style="font-size:0.65em">★</span></span>`
+      : i;
+    door.dataset.day = i;
+    door.addEventListener('click', () => openDoor(i));
+    grid.appendChild(door);
+  }
+
+  // ─── Open door ────────────────────────────────────────────────────────────────
+  function openDoor(day) {
+    const gift = gifts[day - 1];
+    markOpened(day);
+    const doorEl = grid.querySelector(`[data-day="${day}"]`);
+    if (doorEl) doorEl.classList.add('opened');
+
+    dayBadge.textContent = day === 30 ? '🎂 Your Birthday!' : `Day ${day}`;
+    giftLabel.textContent = gift.label;
+    giftLink.href = gift.url;
+    giftLink.className = 'gift-link' + (gift.url === '#' ? ' hidden' : '');
+
+    // Reset animation state
+    resetAnim();
+    giftCard.classList.remove('show');
+
+    overlay.classList.add('visible');
+
+    // Zoom in the box
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        giftAnim.classList.add('show');
+        // Trigger lid/bow pop by re-adding the class
+        void boxLid.offsetWidth; // reflow
+        void bow.offsetWidth;
+        boxLid.classList.add('popping');
+        bow.classList.add('popping');
+
+        // Total animation ~2.2s → then fade out and show card
+        animTimer = setTimeout(finishAnim, 2300);
+      }, 80);
+    });
+  }
+
+  function finishAnim() {
+    giftAnim.classList.add('hide');
+    setTimeout(() => {
+      giftAnim.classList.remove('show', 'hide');
+      giftCard.classList.add('show');
+    }, 380);
+  }
+
+  function resetAnim() {
+    if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+    giftAnim.classList.remove('show', 'hide');
+    boxLid.classList.remove('popping');
+    bow.classList.remove('popping');
+  }
+
+  // ─── Close ────────────────────────────────────────────────────────────────────
+  function closeOverlay() {
+    overlay.classList.remove('visible');
+    setTimeout(() => {
+      giftCard.classList.remove('show');
+      resetAnim();
+    }, 350);
+  }
+
+  closeBtn.addEventListener('click', closeOverlay);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeOverlay(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOverlay(); });
+</script>
+
+</body>
+</html>
