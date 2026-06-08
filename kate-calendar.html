@@ -171,14 +171,14 @@
     .reveal-area {
       display: grid;
       place-items: center;
-      width: min(750px, 95vw);
+      width: min(380px, 85vw);
       margin-bottom: 0.5rem;
     }
     .reveal-area > * { grid-column: 1; grid-row: 1; }
 
     .lottie-container {
-      width: min(750px, 95vw);
-      height: min(750px, 95vw);
+      width: min(380px, 85vw);
+      height: min(380px, 85vw);
       opacity: 0; transform: scale(0.5);
       transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
     }
@@ -347,7 +347,17 @@
 
   // ─── Message data ─────────────────────────────────────────────────────────────
   const messages = [
-    "You deserve to be celebrated every single day, Kate 🌸",
+    [  // day 1 — multi-line opening sequence
+      "My dearest Kate,",
+      "You deserve to be celebrated every single day",
+      "Just like every day you bring joy and warmth",
+      "To everyone who is blessed to encounter you",
+      "So this month allow me to give you",
+      "Small tokens of appreciation and gratitude",
+      "For the amazing person you are",
+      "And the love you spread around you.",
+      "With deep love, Dimitris 'Dee'"
+    ],
     "The joy you bring to people that encounter you is a precious gift",
     "Your laugh could light up the darkest room",
     "Thank you for every stream that made a bad day better",
@@ -442,6 +452,34 @@
     grid.appendChild(door);
   }
 
+  // ─── Message display helpers ──────────────────────────────────────────────────
+  function startAnimation() {
+    if (animReady && anim) {
+      anim.stop();
+      lottieContainer.classList.add('show');
+      anim.play();
+    } else {
+      setTimeout(() => giftCard.classList.add('show'), 300);
+    }
+  }
+
+  function showMessages(msg, onComplete) {
+    const lines = Array.isArray(msg) ? msg : [msg];
+    let index = 0;
+
+    function next() {
+      if (index >= lines.length) { onComplete(); return; }
+      messageText.textContent = lines[index];
+      messageText.classList.add('show');
+      setTimeout(() => {
+        messageText.classList.remove('show');   // fade out
+        index++;
+        setTimeout(next, 350);                  // wait for fade, then next
+      }, 3000);                                 // display duration
+    }
+    setTimeout(next, 80);
+  }
+
   // ─── Open door ────────────────────────────────────────────────────────────────
   function openDoor(day) {
     const gift = gifts[day - 1];
@@ -457,32 +495,9 @@
     lottieContainer.classList.remove('show', 'hide');
     giftCard.classList.remove('show');
     messageText.classList.remove('show');
-    messageText.textContent = messages[day - 1];
-
     overlay.classList.add('visible');
 
-    // Step 1: fade in message
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        messageText.classList.add('show');
-
-        // Step 2: display 3s, then fade out message
-        setTimeout(() => {
-          messageText.classList.remove('show');
-
-          // Step 3: after fade-out (0.35s), start animation
-          setTimeout(() => {
-            if (animReady && anim) {
-              anim.stop();
-              lottieContainer.classList.add('show');
-              anim.play();
-            } else {
-              setTimeout(() => giftCard.classList.add('show'), 300);
-            }
-          }, 350);
-        }, 3000);
-      }, 80);
-    });
+    showMessages(messages[day - 1], startAnimation);
   }
 
   // ─── Close ────────────────────────────────────────────────────────────────────
