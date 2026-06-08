@@ -150,23 +150,21 @@
       position: fixed; inset: 0;
       background: var(--overlay-bg);
       backdrop-filter: blur(6px);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: flex-start;
+      overflow-y: auto;
       z-index: 200; opacity: 0; pointer-events: none;
       transition: opacity 0.35s ease;
-      overflow-y: auto;
-      padding: 4rem 1rem 2.5rem;
     }
     .overlay.visible { opacity: 1; pointer-events: all; }
 
-    /* ─── Gift area wrapper ─── */
-    .gift-area {
+    .overlay-inner {
+      min-height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
+      justify-content: center;
+      padding: 4rem 1rem 2rem;
+      gap: 0;
     }
-    .reveal-area { position: relative; z-index: 2; }
 
     .close-btn {
       position: fixed; top: 1.5rem; right: 1.5rem;
@@ -178,14 +176,22 @@
     }
     .close-btn:hover { background: var(--rose-border); transform: scale(1.08); }
 
-    /* ─── Lottie + gift card overlap wrapper ─── */
-    .reveal-area {
-      display: grid;
-      place-items: center;
-      width: min(750px, 95vw);
-      margin-bottom: 0.5rem;
+    /* ─── Gift area + reveal area ─── */
+    .gift-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
-    .reveal-area > * { grid-column: 1; grid-row: 1; }
+
+    .reveal-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
 
     .lottie-container {
       width: min(750px, 95vw);
@@ -198,8 +204,9 @@
       opacity: 0; transform: scale(0.85);
       transition: opacity 0.35s ease, transform 0.35s ease;
     }
+    .lottie-container.done { display: none; }
 
-    /* ─── Message text ─── */
+    /* ─── Message text — always viewport centred ─── */
     .message-text {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(18px, 4vw, 26px);
@@ -213,7 +220,12 @@
       letter-spacing: 0.02em;
       opacity: 0;
       transition: opacity 0.35s ease;
-      position: absolute;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 210;
+      pointer-events: none;
     }
     .message-text.show { opacity: 1; }
 
@@ -325,16 +337,16 @@
   </div>
 </div>
 
-<!-- Overlay -->
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Gift reveal">
   <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+  <div class="overlay-inner">
 
   <!-- Message text -->
   <p class="message-text" id="messageText"></p>
 
   <!-- Gift area: box animation + gift card + voucher PNG -->
   <div class="gift-area">
-    <!-- Lottie + gift card in same grid cell so they overlap -->
+    <!-- Lottie container -->
     <div class="reveal-area">
       <div class="lottie-container" id="lottieContainer"></div>
       <div class="gift-card" id="giftCard">
@@ -347,6 +359,8 @@
     <div class="voucher-wrapper" id="voucherWrapper">
       <img id="voucherImg" class="voucher-img" src="" alt="Gift voucher">
     </div>
+  </div>
+
   </div>
 </div>
 
@@ -478,6 +492,7 @@
         lottieContainer.classList.add('hide');
         setTimeout(() => {
           lottieContainer.classList.remove('show', 'hide');
+          lottieContainer.classList.add('done');
           giftCard.classList.add('show');
           setTimeout(() => voucherWrapper.classList.add('show'), 400);
         }, 20);
@@ -547,7 +562,7 @@
     giftLink.className = 'gift-link' + (gift.url === '#' ? ' hidden' : '');
     voucherImg.src = getVoucherFile(day);
 
-    lottieContainer.classList.remove('show', 'hide');
+    lottieContainer.classList.remove('show', 'hide', 'done');
     giftCard.classList.remove('show');
     voucherWrapper.classList.remove('show');
     messageText.classList.remove('show');
@@ -562,7 +577,7 @@
     setTimeout(() => {
       giftCard.classList.remove('show');
       voucherWrapper.classList.remove('show');
-      lottieContainer.classList.remove('show', 'hide');
+      lottieContainer.classList.remove('show', 'hide', 'done');
       messageText.classList.remove('show');
       if (anim) anim.stop();
     }, 350);
