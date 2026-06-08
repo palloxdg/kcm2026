@@ -151,11 +151,22 @@
       background: var(--overlay-bg);
       backdrop-filter: blur(6px);
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      align-items: center; justify-content: flex-start;
       z-index: 200; opacity: 0; pointer-events: none;
       transition: opacity 0.35s ease;
+      overflow-y: auto;
+      padding: 4rem 1rem 2.5rem;
     }
     .overlay.visible { opacity: 1; pointer-events: all; }
+
+    /* ─── Gift area wrapper ─── */
+    .gift-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .reveal-area { position: relative; z-index: 2; }
 
     .close-btn {
       position: fixed; top: 1.5rem; right: 1.5rem;
@@ -242,6 +253,29 @@
     .gift-link:hover { background: var(--rose-darker); transform: translateY(-2px); }
     .gift-link.hidden { display: none; }
 
+    /* ─── Voucher image ─── */
+    .voucher-wrapper {
+      position: relative;
+      z-index: 1;
+      width: min(420px, 85vw);
+      margin-top: 0.75rem;
+      transform: translateY(-180px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.8s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.6s ease 0.1s;
+    }
+    .voucher-wrapper.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+    .voucher-img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(123, 45, 66, 0.18);
+      display: block;
+    }
+
     /* ─── Responsive ─── */
     @media (max-width: 600px) {
       body { padding: 0.75rem; }
@@ -298,13 +332,20 @@
   <!-- Message text -->
   <p class="message-text" id="messageText"></p>
 
-  <!-- Lottie + gift card in same grid cell so they overlap -->
-  <div class="reveal-area">
-    <div class="lottie-container" id="lottieContainer"></div>
-    <div class="gift-card" id="giftCard">
-      <div class="gift-day-badge" id="dayBadge">Day 1</div>
-      <div class="gift-label" id="giftLabel">—</div>
-      <a href="#" id="giftLink" class="gift-link" target="_blank" rel="noopener noreferrer">Open your gift</a>
+  <!-- Gift area: box animation + gift card + voucher PNG -->
+  <div class="gift-area">
+    <!-- Lottie + gift card in same grid cell so they overlap -->
+    <div class="reveal-area">
+      <div class="lottie-container" id="lottieContainer"></div>
+      <div class="gift-card" id="giftCard">
+        <div class="gift-day-badge" id="dayBadge">Day 1</div>
+        <div class="gift-label" id="giftLabel">—</div>
+        <a href="#" id="giftLink" class="gift-link" target="_blank" rel="noopener noreferrer">Open your gift</a>
+      </div>
+    </div>
+    <!-- Voucher PNG slides out from under the box -->
+    <div class="voucher-wrapper" id="voucherWrapper">
+      <img id="voucherImg" class="voucher-img" src="" alt="Gift voucher">
     </div>
   </div>
 </div>
@@ -397,15 +438,26 @@
   }
 
   // ─── DOM refs ─────────────────────────────────────────────────────────────────
-  const grid          = document.getElementById('calGrid');
-  const overlay       = document.getElementById('overlay');
-  const messageText   = document.getElementById('messageText');
+  const grid            = document.getElementById('calGrid');
+  const overlay         = document.getElementById('overlay');
+  const messageText     = document.getElementById('messageText');
   const lottieContainer = document.getElementById('lottieContainer');
-  const giftCard      = document.getElementById('giftCard');
-  const giftLabel     = document.getElementById('giftLabel');
-  const giftLink      = document.getElementById('giftLink');
-  const dayBadge      = document.getElementById('dayBadge');
-  const closeBtn      = document.getElementById('closeBtn');
+  const giftCard        = document.getElementById('giftCard');
+  const giftLabel       = document.getElementById('giftLabel');
+  const giftLink        = document.getElementById('giftLink');
+  const dayBadge        = document.getElementById('dayBadge');
+  const closeBtn        = document.getElementById('closeBtn');
+  const voucherWrapper  = document.getElementById('voucherWrapper');
+  const voucherImg      = document.getElementById('voucherImg');
+
+  function getVoucherFile(day) {
+    if (day === 1)               return 'voucher-spa.png';
+    if (day >= 2  && day <= 8)   return 'voucher-amazon.png';
+    if (day >= 9  && day <= 15)  return 'voucher-ccc.png';
+    if (day >= 16 && day <= 22)  return 'voucher-allegro.png';
+    if (day >= 23 && day <= 29)  return 'voucher-steam.png';
+    if (day === 30)              return 'voucher-cwhf.png';
+  }
 
   // ─── Load lottie animation once ───────────────────────────────────────────────
   let anim = null;
@@ -427,6 +479,7 @@
         setTimeout(() => {
           lottieContainer.classList.remove('show', 'hide');
           giftCard.classList.add('show');
+          setTimeout(() => voucherWrapper.classList.add('show'), 400);
         }, 20);
       });
     })
@@ -458,23 +511,25 @@
       lottieContainer.classList.add('show');
       anim.play();
     } else {
-      setTimeout(() => giftCard.classList.add('show'), 300);
+      setTimeout(() => {
+        giftCard.classList.add('show');
+        setTimeout(() => voucherWrapper.classList.add('show'), 400);
+      }, 300);
     }
   }
 
   function showMessages(msg, onComplete) {
     const lines = Array.isArray(msg) ? msg : [msg];
     let index = 0;
-
     function next() {
       if (index >= lines.length) { onComplete(); return; }
       messageText.textContent = lines[index];
       messageText.classList.add('show');
       setTimeout(() => {
-        messageText.classList.remove('show');   // fade out
+        messageText.classList.remove('show');
         index++;
-        setTimeout(next, 350);                  // wait for fade, then next
-      }, 3000);                                 // display duration
+        setTimeout(next, 350);
+      }, 3000);
     }
     setTimeout(next, 80);
   }
@@ -490,9 +545,11 @@
     giftLabel.textContent = gift.label;
     giftLink.href = gift.url;
     giftLink.className = 'gift-link' + (gift.url === '#' ? ' hidden' : '');
+    voucherImg.src = getVoucherFile(day);
 
     lottieContainer.classList.remove('show', 'hide');
     giftCard.classList.remove('show');
+    voucherWrapper.classList.remove('show');
     messageText.classList.remove('show');
     overlay.classList.add('visible');
 
@@ -504,6 +561,7 @@
     overlay.classList.remove('visible');
     setTimeout(() => {
       giftCard.classList.remove('show');
+      voucherWrapper.classList.remove('show');
       lottieContainer.classList.remove('show', 'hide');
       messageText.classList.remove('show');
       if (anim) anim.stop();
