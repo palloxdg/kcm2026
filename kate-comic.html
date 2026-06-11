@@ -207,72 +207,40 @@
     }
     .modal-close:hover { background: rgba(253,240,244,0.22); transform: scale(1.08); }
 
-    /* Image area */
+    /* Image area — always scrollable */
     .modal-stage {
       position: relative;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100vw;
-      height: 100vh;
-      padding: 3.5rem 5rem;
-      overflow: hidden; /* default: no scroll */
-    }
-    .modal-stage.zoomed {
-      overflow: auto;         /* scroll when zoomed */
       align-items: flex-start;
       justify-content: flex-start;
-      cursor: zoom-out;
-      padding: 3.5rem 5rem 5rem; /* extra bottom for scrollbar clearance */
+      width: 100vw;
+      height: 100vh;
+      padding: 3.5rem 5rem 5rem;
+      overflow: auto;
     }
 
     .modal-img-wrap {
       position: relative;
-      height: 100%;
-      max-height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .modal-stage.zoomed .modal-img-wrap {
       height: auto;
-      max-height: none;
-      margin: auto; /* centre inside scrollable area */
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      margin: auto;
+      flex-shrink: 0;
     }
 
     .modal-img {
-      max-height: 100%;
-      max-width: 100%;
+      max-height: none;
+      max-width: none;
+      width: min(1800px, 260vh);
       object-fit: contain;
       border-radius: 8px;
       box-shadow: 0 24px 80px rgba(0,0,0,0.55);
       opacity: 0;
-      transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34,1.2,0.64,1);
+      transition: opacity 0.3s ease;
       display: block;
-      cursor: zoom-in;
     }
     .modal-img.loaded { opacity: 1; }
-    .modal-stage.zoomed .modal-img {
-      max-height: none;
-      max-width: none;
-      width: min(1800px, 260vh); /* large but sensible cap */
-      cursor: zoom-out;
-    }
-
-    /* Subtle zoom hint that fades after first view */
-    .zoom-hint {
-      position: fixed;
-      bottom: 3.2rem; right: 1.4rem;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 12px; font-style: italic;
-      color: rgba(244,192,209,0.55);
-      letter-spacing: 0.08em;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
-      z-index: 10;
-    }
-    .zoom-hint.hide { opacity: 0; }
 
     /* Nav arrows */
     .modal-arrow {
@@ -441,8 +409,6 @@
     </div>
   </div>
 
-  <span class="zoom-hint" id="zoomHint">click image to zoom</span>
-
   <button class="modal-arrow prev" id="prevBtn" aria-label="Previous page">&#8592;</button>
   <button class="modal-arrow next" id="nextBtn" aria-label="Next page">&#8594;</button>
 
@@ -470,32 +436,14 @@
   const modalClose = document.getElementById('modalClose');
   const prevBtn    = document.getElementById('prevBtn');
   const nextBtn    = document.getElementById('nextBtn');
-  const zoomHint   = document.getElementById('zoomHint');
   const dots       = document.querySelectorAll('.dot');
   let current = 0;
-  let zoomed  = false;
-  let hintShown = false;
-
-  /* ── Zoom toggle ── */
-  function setZoom(on) {
-    zoomed = on;
-    modalStage.classList.toggle('zoomed', zoomed);
-    if (!zoomed) {
-      // Scroll back to top-left when zooming out
-      modalStage.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    }
-  }
-
-  modalImg.addEventListener('click', e => {
-    e.stopPropagation(); // don't bubble to modal backdrop
-    setZoom(!zoomed);
-  });
 
   function goTo(index) {
-    setZoom(false);
     current = index;
     const page = pages[current];
     modalImg.classList.remove('loaded');
+    modalStage.scrollTo({ top: 0, left: 0 });
     modalImg.src = page.src;
     modalImg.alt = page.label;
     modalLabel.textContent = page.label;
@@ -510,16 +458,9 @@
     goTo(index);
     modal.classList.add('visible');
     document.body.style.overflow = 'hidden';
-    // Show zoom hint once, then fade it out
-    if (!hintShown) {
-      hintShown = true;
-      zoomHint.classList.remove('hide');
-      setTimeout(() => zoomHint.classList.add('hide'), 2800);
-    }
   }
 
   function closeModal() {
-    setZoom(false);
     modal.classList.remove('visible');
     document.body.style.overflow = '';
   }
@@ -529,20 +470,19 @@
     thumb.addEventListener('click', () => openModal(+thumb.dataset.index));
   });
 
-  // Navigation — guard against firing while zoomed (user may be scrolling)
+  // Navigation
   prevBtn.addEventListener('click', e => { e.stopPropagation(); if (current > 0) goTo(current - 1); });
   nextBtn.addEventListener('click', e => { e.stopPropagation(); if (current < pages.length - 1) goTo(current + 1); });
   dots.forEach(d => d.addEventListener('click', e => { e.stopPropagation(); goTo(+d.dataset.i); }));
 
-  // Close — only when clicking the dark backdrop, not the scrollable stage
+  // Close
   modalClose.addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
   // Keyboard
   document.addEventListener('keydown', e => {
     if (!modal.classList.contains('visible')) return;
-    if (e.key === 'Escape') { if (zoomed) setZoom(false); else closeModal(); return; }
-    if (zoomed) return; // don't page-flip while zoomed in
+    if (e.key === 'Escape') { closeModal(); return; }
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       if (current < pages.length - 1) goTo(current + 1);
     } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
@@ -550,11 +490,10 @@
     }
   });
 
-  // Touch swipe — only when not zoomed
+  // Touch swipe
   let touchStartX = 0;
   modal.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
   modal.addEventListener('touchend', e => {
-    if (zoomed) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
     if (Math.abs(dx) < 40) return;
     if (dx < 0 && current < pages.length - 1) goTo(current + 1);
