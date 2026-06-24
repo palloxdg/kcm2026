@@ -461,6 +461,10 @@
   }
 
   function closeModal() {
+    if (current === pages.length - 1) {
+      window.location.href = 'kate-thankyou.html';
+      return;
+    }
     modal.classList.remove('visible');
     document.body.style.overflow = '';
   }
