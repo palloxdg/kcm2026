@@ -5,6 +5,19 @@ import { loadCompleted, saveCompleted } from './storage.js';
 const day = getAdventureDay();
 const completed = loadCompleted();
 let activeQuest = null;
+let journalPage = 0;
+let journalImageIndex = 0;
+
+// Add purchased codes here. A code is only shown after its matching quest is complete.
+const voucherCodes = Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added']));
+const voucherGroups = [
+  { title: 'Spa', from: 1, to: 1, image: 'assets/art/vouchers/voucher-spa.png' },
+  { title: 'Amazon', from: 2, to: 8, image: 'assets/art/vouchers/voucher-amazon.png' },
+  { title: 'MODIVO / CCC', from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png' },
+  { title: 'Morele', from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png' },
+  { title: 'Steam', from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png' },
+  { title: 'Wild Horse Fund', from: 30, to: 30, image: 'assets/art/vouchers/voucher-cwhf.png' }
+];
 
 const $ = selector => document.querySelector(selector);
 const els = {
@@ -16,7 +29,12 @@ const els = {
   sceneTitle: $('#sceneTitle'), scenePrompt: $('#scenePrompt'), hotspot: $('#hotspot'), backButton: $('#backButton'),
   modal: $('#rewardModal'), rewardIcon: $('#rewardIcon'), rewardDay: $('#rewardDay'), rewardTitle: $('#rewardTitle'),
   rewardText: $('#rewardText'), rewardVoucher: $('#rewardVoucher'), rewardVoucherImage: $('#rewardVoucherImage'), closeReward: $('#closeReward'), returnButton: $('#returnButton'),
-  letterOverlay: $('#letterOverlay'), letterImage: $('#letterImage'), closeLetter: $('#closeLetter')
+  letterOverlay: $('#letterOverlay'), letterImage: $('#letterImage'), closeLetter: $('#closeLetter'),
+  openJournal: $('#openJournal'), journalOverlay: $('#journalOverlay'), closeJournal: $('#closeJournal'),
+  journalPage: $('#journalPage'), journalPageLabel: $('#journalPageLabel'), journalPrevious: $('#journalPrevious'), journalNext: $('#journalNext'),
+  parchmentOverlay: $('#parchmentOverlay'), parchmentTitle: $('#parchmentTitle'), parchmentCodes: $('#parchmentCodes'), closeParchment: $('#closeParchment'),
+  imageOverlay: $('#imageOverlay'), journalFullImage: $('#journalFullImage'), imageViewerTitle: $('#imageViewerTitle'), closeImageViewer: $('#closeImageViewer'),
+  previousJournalImage: $('#previousJournalImage'), nextJournalImage: $('#nextJournalImage')
 };
 
 function render() {
@@ -193,6 +211,113 @@ function closeReward(returnToMap = false) {
   }
 }
 
+function setOverlay(overlay, open) {
+  overlay.classList.toggle('is-open', open);
+  overlay.setAttribute('aria-hidden', String(!open));
+}
+
+function renderJournal() {
+  els.journalPage.replaceChildren();
+  els.journalPrevious.disabled = journalPage === 0;
+  els.journalNext.disabled = journalPage === 5;
+  els.journalPageLabel.textContent = journalPage === 0 ? 'Page 1 of 6 · Voucher collection' : `Page ${journalPage + 1} of 6 · Days ${(journalPage - 1) * 6 + 1}–${journalPage * 6}`;
+  const grid = document.createElement('div');
+  grid.className = 'journal-grid';
+
+  if (journalPage === 0) {
+    voucherGroups.forEach(group => {
+      const groupQuests = quests.filter(quest => quest.day >= group.from && quest.day <= group.to);
+      const found = groupQuests.filter(quest => completed.has(quest.id)).length;
+      const tile = document.createElement('button');
+      tile.type = 'button';
+      tile.className = 'journal-tile voucher-tile';
+      tile.setAttribute('aria-label', `${group.title}: ${found} of ${groupQuests.length} rewards found`);
+      tile.innerHTML = `<img src="${group.image}" alt="${group.title} voucher"><span class="voucher-progress">${found}/${groupQuests.length}</span><span class="journal-tile-caption">${group.title}</span>`;
+      tile.addEventListener('click', () => openVoucherParchment(group));
+      grid.append(tile);
+    });
+  } else {
+    quests.slice((journalPage - 1) * 6, journalPage * 6).forEach(quest => {
+      const unlocked = completed.has(quest.id);
+      const tile = document.createElement('button');
+      tile.type = 'button';
+      tile.className = `journal-tile${unlocked ? '' : ' is-locked'}`;
+      tile.disabled = !unlocked;
+      tile.setAttribute('aria-label', unlocked ? `View Day ${quest.day}: ${quest.title}` : `Day ${quest.day}, not yet discovered`);
+      tile.innerHTML = `<img src="${quest.openSceneArt || quest.sceneArt}" alt=""><span class="journal-tile-caption">Day ${quest.day} · ${quest.title}</span>${unlocked ? '' : `<span class="journal-lock">${quest.day}<small>Not yet discovered</small></span>`}`;
+      if (unlocked) tile.addEventListener('click', () => openJournalImage(quest));
+      grid.append(tile);
+    });
+  }
+  els.journalPage.append(grid);
+}
+
+function openJournal() {
+  renderJournal();
+  setOverlay(els.journalOverlay, true);
+  els.closeJournal.focus();
+}
+
+function closeJournal() {
+  setOverlay(els.journalOverlay, false);
+  els.openJournal.focus();
+}
+
+function changeJournalPage(change) {
+  journalPage = Math.max(0, Math.min(5, journalPage + change));
+  renderJournal();
+}
+
+function openVoucherParchment(group) {
+  els.parchmentTitle.textContent = group.title;
+  els.parchmentCodes.replaceChildren();
+  quests.filter(quest => quest.day >= group.from && quest.day <= group.to).forEach(quest => {
+    const unlocked = completed.has(quest.id);
+    const row = document.createElement('div');
+    row.className = 'code-row';
+    const code = voucherCodes[quest.day];
+    row.innerHTML = `<strong>Day ${quest.day}</strong><span class="code-value${unlocked ? '' : ' is-locked'}">${unlocked ? code : '••••••••••••'}</span><button class="copy-code" type="button" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Copy' : 'Locked'}</button>`;
+    if (unlocked) row.querySelector('button').addEventListener('click', async event => {
+      await navigator.clipboard?.writeText(code);
+      event.currentTarget.textContent = 'Copied';
+      window.setTimeout(() => { event.currentTarget.textContent = 'Copy'; }, 1200);
+    });
+    els.parchmentCodes.append(row);
+  });
+  setOverlay(els.parchmentOverlay, true);
+  els.closeParchment.focus();
+}
+
+function completedGallery() {
+  return quests.filter(quest => completed.has(quest.id));
+}
+
+function openJournalImage(quest) {
+  const gallery = completedGallery();
+  journalImageIndex = Math.max(0, gallery.findIndex(item => item.id === quest.id));
+  renderJournalImage();
+  setOverlay(els.imageOverlay, true);
+  els.closeImageViewer.focus();
+}
+
+function renderJournalImage() {
+  const gallery = completedGallery();
+  if (!gallery.length) return;
+  journalImageIndex = (journalImageIndex + gallery.length) % gallery.length;
+  const quest = gallery[journalImageIndex];
+  els.journalFullImage.src = quest.openSceneArt || quest.sceneArt;
+  els.journalFullImage.alt = quest.sceneAlt;
+  els.imageViewerTitle.textContent = `Day ${quest.day} · ${quest.title}`;
+  const multiple = gallery.length > 1;
+  els.previousJournalImage.hidden = !multiple;
+  els.nextJournalImage.hidden = !multiple;
+}
+
+function changeJournalImage(change) {
+  journalImageIndex += change;
+  renderJournalImage();
+}
+
 function resetCompletionData() {
   if (!window.confirm('Reset all completed quests for testing?')) return;
   completed.clear();
@@ -201,12 +326,32 @@ function resetCompletionData() {
   els.resetProgress.blur();
 }
 els.hotspot.addEventListener('click', handleObjectInteraction);
+els.openJournal.addEventListener('click', openJournal);
+els.closeJournal.addEventListener('click', closeJournal);
+els.journalPrevious.addEventListener('click', () => changeJournalPage(-1));
+els.journalNext.addEventListener('click', () => changeJournalPage(1));
+els.journalOverlay.querySelector('[data-close-journal]').addEventListener('click', closeJournal);
+els.closeParchment.addEventListener('click', () => setOverlay(els.parchmentOverlay, false));
+els.parchmentOverlay.querySelector('[data-close-parchment]').addEventListener('click', () => setOverlay(els.parchmentOverlay, false));
+els.closeImageViewer.addEventListener('click', () => setOverlay(els.imageOverlay, false));
+els.imageOverlay.querySelector('[data-close-image]').addEventListener('click', () => setOverlay(els.imageOverlay, false));
+els.previousJournalImage.addEventListener('click', () => changeJournalImage(-1));
+els.nextJournalImage.addEventListener('click', () => changeJournalImage(1));
 els.resetProgress.addEventListener('click', resetCompletionData);
 els.closeLetter.addEventListener('click', closeLetter);
 els.backButton.addEventListener('click', () => showView('map'));
 els.closeReward.addEventListener('click', () => closeReward(false));
 els.returnButton.addEventListener('click', () => closeReward(true));
 els.modal.addEventListener('click', event => { if (event.target.classList.contains('modal-backdrop')) closeReward(false); });
-document.addEventListener('keydown', event => { if (event.key === 'Escape' && els.modal.classList.contains('is-open')) closeReward(false); });
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && els.imageOverlay.classList.contains('is-open')) setOverlay(els.imageOverlay, false);
+  else if (event.key === 'Escape' && els.parchmentOverlay.classList.contains('is-open')) setOverlay(els.parchmentOverlay, false);
+  else if (event.key === 'Escape' && els.journalOverlay.classList.contains('is-open')) closeJournal();
+  else if (event.key === 'Escape' && els.modal.classList.contains('is-open')) closeReward(false);
+  else if (els.imageOverlay.classList.contains('is-open') && event.key === 'ArrowLeft') changeJournalImage(-1);
+  else if (els.imageOverlay.classList.contains('is-open') && event.key === 'ArrowRight') changeJournalImage(1);
+  else if (els.journalOverlay.classList.contains('is-open') && event.key === 'ArrowLeft') changeJournalPage(-1);
+  else if (els.journalOverlay.classList.contains('is-open') && event.key === 'ArrowRight') changeJournalPage(1);
+});
 
 render();
