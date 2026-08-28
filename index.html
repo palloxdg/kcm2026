@@ -21,6 +21,10 @@
             <span class="status-divider" aria-hidden="true"></span>
             <span id="currentRegion">Awaiting November</span>
             <span class="status-divider" aria-hidden="true"></span>
+            <button id="openJournal" class="journal-button" type="button" aria-label="Open journey journal" title="Journey journal">
+              <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 6.5c4.9-.8 8.8.2 12 3v17c-3.2-2.8-7.1-3.8-12-3V6.5Zm24 0c-4.9-.8-8.8.2-12 3v17c3.2-2.8 7.1-3.8 12-3V6.5Z"/><path d="M16 9.5v17"/></svg>
+            </button>
+            <span class="status-divider status-divider-after-journal" aria-hidden="true"></span>
             <button id="resetProgress" class="reset-progress" type="button">Reset test progress</button>
           </div>
           <h1 id="mapTitle">A world is waiting, Kate.</h1>
@@ -112,6 +116,10 @@
       <button id="returnButton" class="primary-button" type="button">Return to the map</button>
     </div>
   </div>
+
+  <div id="journalOverlay" class="journal-overlay" role="dialog" aria-modal="true" aria-labelledby="journalTitle" aria-hidden="true"><div class="journal-backdrop" data-close-journal aria-hidden="true"></div><section class="journal-book"><button id="closeJournal" class="journal-close" type="button" aria-label="Close journal">×</button><header class="journal-heading"><p class="journal-kicker">Kate's journey</p><h2 id="journalTitle">The Adventure Journal</h2><p id="journalPageLabel" class="journal-page-label"></p></header><div class="journal-nav" aria-label="Journal pages"><button id="journalPrevious" type="button" aria-label="Previous journal page">←</button><button id="journalNext" type="button" aria-label="Next journal page">→</button></div><div id="journalPage" class="journal-page"></div><span class="journal-binding" aria-hidden="true"></span></section></div>
+  <div id="parchmentOverlay" class="journal-detail-overlay" role="dialog" aria-modal="true" aria-labelledby="parchmentTitle" aria-hidden="true"><div class="journal-detail-backdrop" data-close-parchment aria-hidden="true"></div><section class="voucher-parchment"><button id="closeParchment" class="journal-detail-close" type="button" aria-label="Close voucher details">×</button><p class="journal-kicker">Voucher collection</p><h2 id="parchmentTitle"></h2><div id="parchmentCodes" class="parchment-codes"></div></section></div>
+  <div id="imageOverlay" class="journal-detail-overlay image-viewer" role="dialog" aria-modal="true" aria-labelledby="imageViewerTitle" aria-hidden="true"><div class="journal-detail-backdrop" data-close-image aria-hidden="true"></div><figure class="image-viewer-frame"><button id="closeImageViewer" class="journal-detail-close" type="button" aria-label="Close image">×</button><button id="previousJournalImage" class="image-viewer-nav image-viewer-previous" type="button" aria-label="Previous completed image">←</button><img id="journalFullImage" src="" alt=""><button id="nextJournalImage" class="image-viewer-nav image-viewer-next" type="button" aria-label="Next completed image">→</button><figcaption id="imageViewerTitle"></figcaption></figure></div>
 
   <template id="markerTemplate">
     <button class="quest-marker" type="button">

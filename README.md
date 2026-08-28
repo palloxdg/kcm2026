@@ -35,6 +35,12 @@ Completed quests are stored in browser `localStorage` under `kcm2026.completedQu
 localStorage.removeItem('kcm2026.completedQuests');
 ```
 
+## Adventure journal
+
+The book icon in the fourth status slot opens a six-page completion-aware journal. Page 1 groups the six voucher types and reveals each daily code only after that quest is complete. Pages 2–6 contain the 30 after-click scene images in groups of six; incomplete entries remain locked.
+
+Purchased voucher codes are entered in the `voucherCodes` configuration near the top of `js/app.js`. Regenerate `js/app.bundle.js` after changing them, as with any source JavaScript change.
+
 ## Content and artwork
 
 - All 30 landmarks have dedicated base and after-click scene artwork.
