@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#13281f">
+  <meta name="description" content="KCM2026 — Kate's November birthday adventure">
+  <title>KCM2026 · Kate's November Adventure</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+<main id="game" class="game">
+      <section id="mapView" class="view map-view is-active" aria-labelledby="mapTitle">
+        <div class="map-copy">
+          <p class="eyebrow">The journey begins</p>
+          <div class="journey-status" aria-live="polite">
+            <span id="dayLabel">November 1</span>
+            <span class="status-divider" aria-hidden="true"></span>
+            <span><strong id="completedCount">0</strong> / 30 quests complete</span>
+            <span class="status-divider" aria-hidden="true"></span>
+            <span id="currentRegion">Awaiting November</span>
+            <span class="status-divider" aria-hidden="true"></span>
+            <button id="resetProgress" class="reset-progress" type="button">Reset test progress</button>
+          </div>
+          <h1 id="mapTitle">A world is waiting, Kate.</h1>
+          <p id="mapHint">Thirty landmarks. Thirty discoveries. Follow the golden marker.</p>
+        </div>
+
+        <div class="map-scroll">
+          <span class="map-scroll-roll map-scroll-roll-left" aria-hidden="true"></span>
+          <span class="map-scroll-roll map-scroll-roll-right" aria-hidden="true"></span>
+          <div id="mapViewport" class="map-viewport">
+          <div id="mapWorld" class="map-world">
+            <img class="map-art" src="./assets/art/world-map-painted.webp" alt="Hand-painted fantasy adventure map with villages, forests, rivers, mountains and coastal islands">
+            <svg id="fog" class="fog" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+
+                <filter id="revealSoftEdge" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.1" /></filter>
+                <filter id="fogTexture" x="-20%" y="-20%" width="140%" height="140%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.035 0.08" numOctaves="3" seed="17" />
+                  <feColorMatrix type="saturate" values="0" />
+                  <feBlend mode="soft-light" in="SourceGraphic" />
+                </filter>
+                <mask id="fogMask">
+                  <rect width="100" height="100" fill="white" />
+                  <g id="fogRevealHoles" filter="url(#revealSoftEdge)"></g>
+                </mask>
+              </defs>
+              <rect class="fog-field" width="100" height="100" mask="url(#fogMask)" />
+              <rect class="fog-grain" width="100" height="100" mask="url(#fogMask)" filter="url(#fogTexture)" />
+            </svg>
+            <div id="questMarkers" class="quest-markers"></div>
+          </div>
+          <div class="map-vignette" aria-hidden="true"></div>
+          <div class="map-compass" aria-hidden="true"><span>N</span></div>
+          <div class="map-legend" aria-label="Quest marker legend">
+            <span><i class="legend-dot is-active"></i>Today</span>
+            <span><i class="legend-dot is-available"></i>Available</span>
+            <span><i class="legend-dot is-complete"></i>Complete</span>
+          </div>
+        </div>
+
+        </div>
+
+        <div class="progress-panel">
+          <div class="progress-label"><span>World discovered</span><strong id="discoveryPercent">3%</strong></div>
+          <div class="progress-track"><span id="discoveryBar"></span></div>
+        </div>
+      </section>
+
+      <section id="sceneView" class="view scene-view" aria-labelledby="sceneTitle" aria-hidden="true">
+        <div class="scene-stage" id="sceneStage">
+          <img id="sceneArt" class="scene-art" src="" alt="">
+          <img id="sceneOpenArt" class="scene-art scene-open-art" src="" alt="" aria-hidden="true">
+          <button id="hotspot" class="hotspot" type="button">
+            <span class="hotspot-pulse" aria-hidden="true"></span>
+            <span class="hotspot-label">Inspect</span>
+          </button>
+          <div class="scene-shade" aria-hidden="true"></div>
+          <div class="scene-copy">
+            <button id="backButton" class="back-button" type="button">← World map</button>
+            <p id="sceneRegion" class="eyebrow"></p>
+            <h2 id="sceneTitle"></h2>
+            <p id="scenePrompt"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="letterOverlay" class="letter-overlay" role="dialog" aria-modal="true" aria-label="Kate's letter" aria-hidden="true">
+    <div class="letter-backdrop" aria-hidden="true"></div>
+    <div class="letter-sheet">
+      <img id="letterImage" src="" alt="A personal letter for Kate">
+      <button id="closeLetter" class="letter-close" type="button" aria-label="Close letter">×</button>
+    </div>
+  </div>
+  <div id="rewardModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="rewardTitle" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="reward-card">
+      <button id="closeReward" class="modal-close" type="button" aria-label="Close reward">×</button>
+      <div class="reward-ribbon">Quest complete</div>
+      <div id="rewardIcon" class="reward-icon" aria-hidden="true">✦</div>
+      <p id="rewardDay" class="eyebrow"></p>
+      <h2 id="rewardTitle"></h2>
+      <p id="rewardText"></p>
+      <a id="rewardVoucher" class="voucher" href="#" target="_blank" rel="noopener noreferrer">
+        <img id="rewardVoucherImage" src="" alt="">
+        <span class="visually-hidden">Open voucher</span>
+      </a>
+      <button id="returnButton" class="primary-button" type="button">Return to the map</button>
+    </div>
+  </div>
+
+  <template id="markerTemplate">
+    <button class="quest-marker" type="button">
+      <span class="marker-pin"><span class="marker-symbol">!</span></span>
+      <span class="marker-label"></span>
+    </button>
+  </template>
+
+  <script defer src="./js/app.bundle.js"></script>
+</body>
+</html>
