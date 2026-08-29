@@ -37,6 +37,48 @@ const els = {
   previousJournalImage: $('#previousJournalImage'), nextJournalImage: $('#nextJournalImage')
 };
 
+const preloadedImages = new Set();
+
+function preloadImage(src) {
+  if (!src || preloadedImages.has(src)) return Promise.resolve();
+  preloadedImages.add(src);
+  return new Promise(resolve => {
+    const image = new Image();
+    image.onload = resolve;
+    image.onerror = resolve;
+    image.src = src;
+  });
+}
+
+function questImageSources(quest) {
+  return [quest.sceneArt, quest.openSceneArt, quest.letterArt, quest.easterEggArt].filter(Boolean);
+}
+
+function scheduleIdleWork(callback) {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(callback, { timeout: 2500 });
+  } else {
+    window.setTimeout(callback, 800);
+  }
+}
+
+function preloadAdventureImages() {
+  const currentQuest = quests.find(quest => quest.day === day);
+  questImageSources(currentQuest ?? {}).forEach(preloadImage);
+
+  const backgroundQueue = quests
+    .filter(quest => quest.day <= day && quest !== currentQuest)
+    .flatMap(questImageSources);
+
+  const preloadNext = () => {
+    const nextSource = backgroundQueue.shift();
+    if (!nextSource) return;
+    preloadImage(nextSource).finally(() => scheduleIdleWork(preloadNext));
+  };
+
+  scheduleIdleWork(preloadNext);
+}
+
 function render() {
   const progress = Math.round((day / 30) * 100);
   els.dayLabel.textContent = formatAdventureDate(day);
@@ -378,3 +420,4 @@ document.addEventListener('keydown', event => {
 });
 
 render();
+preloadAdventureImages();
