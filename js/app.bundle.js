@@ -555,7 +555,6 @@ const landmarks = [
     openSceneArt: 'assets/art/scene-day30-starlight-paddock-open.webp',
     revealBox: { x: 0, y: 0, w: 100, h: 100 },
     easterEggArt: 'assets/art/scene-day30-starlight-paddock-easter-egg.webp',
-    easterEggHotspot: { x: 39, y: 42, w: 17, h: 26 },
     prompt: 'The journey ends at one last closed door. Someone is waiting on the other side.',
     objectLabel: 'Open the stable doors',
     hotspot: { x: 38, y: 38, w: 21, h: 20 },
@@ -598,7 +597,6 @@ const quests = landmarks.map(landmark => {
     revealBox: landmark.revealBox ?? null,
     letterArt: landmark.letterArt ?? null,
     easterEggArt: landmark.easterEggArt ?? null,
-    easterEggHotspot: landmark.easterEggHotspot ? { ...landmark.easterEggHotspot } : null,
     prompt: landmark.prompt ?? scene.prompt(landmark.region),
     objectLabel: landmark.objectLabel ?? scene.objectLabel,
     hotspot: { ...(landmark.hotspot ?? scene.hotspot) },
@@ -672,7 +670,7 @@ const els = {
   markers: $('#questMarkers'), markerTemplate: $('#markerTemplate'), dayLabel: $('#dayLabel'),
   completedCount: $('#completedCount'), currentRegion: $('#currentRegion'), resetProgress: $('#resetProgress'), discoveryPercent: $('#discoveryPercent'), discoveryBar: $('#discoveryBar'),
   mapHint: $('#mapHint'), sceneStage: $('#sceneStage'), sceneArt: $('#sceneArt'), sceneOpenArt: $('#sceneOpenArt'), sceneRegion: $('#sceneRegion'),
-  sceneTitle: $('#sceneTitle'), scenePrompt: $('#scenePrompt'), hotspot: $('#hotspot'), easterEggHotspot: $('#easterEggHotspot'), backButton: $('#backButton'),
+  sceneTitle: $('#sceneTitle'), scenePrompt: $('#scenePrompt'), hotspot: $('#hotspot'), backButton: $('#backButton'),
   modal: $('#rewardModal'), rewardIcon: $('#rewardIcon'), rewardDay: $('#rewardDay'), rewardTitle: $('#rewardTitle'),
   rewardText: $('#rewardText'), rewardVoucher: $('#rewardVoucher'), rewardVoucherImage: $('#rewardVoucherImage'), closeReward: $('#closeReward'), returnButton: $('#returnButton'),
   letterOverlay: $('#letterOverlay'), letterImage: $('#letterImage'), closeLetter: $('#closeLetter'),
@@ -794,7 +792,6 @@ function enterQuest(id) {
     els.sceneArt.src = activeQuest.sceneArt;
     els.sceneArt.alt = activeQuest.sceneAlt;
     els.sceneStage.classList.remove('is-object-opening', 'is-object-open');
-    els.easterEggHotspot.classList.remove('is-available');
     if (activeQuest.openSceneArt && activeQuest.revealBox) {
       const box = activeQuest.revealBox;
       els.sceneOpenArt.src = activeQuest.openSceneArt;
@@ -819,13 +816,6 @@ function enterQuest(id) {
       width: `${activeQuest.hotspot.w}%`, height: `${activeQuest.hotspot.h}%`
     });
     els.hotspot.querySelector('.hotspot-label').textContent = activeQuest.objectLabel;
-    if (activeQuest.easterEggArt && activeQuest.easterEggHotspot) {
-      Object.assign(els.easterEggHotspot.style, {
-        left: `${activeQuest.easterEggHotspot.x}%`, top: `${activeQuest.easterEggHotspot.y}%`,
-        width: `${activeQuest.easterEggHotspot.w}%`, height: `${activeQuest.easterEggHotspot.h}%`
-      });
-      els.easterEggHotspot.classList.add('is-available');
-    }
     showView('scene');
     els.hotspot.focus({ preventScroll: true });
     els.mapView.classList.remove('is-departing');
@@ -866,14 +856,6 @@ function handleObjectInteraction() {
 function revealEasterEgg() {
   if (!activeQuest?.easterEggArt || !els.sceneStage.classList.contains('is-object-open')) return;
   els.sceneOpenArt.src = activeQuest.easterEggArt;
-  els.easterEggHotspot.classList.remove('is-available');
-}
-
-function handleSceneEasterEggClick(event) {
-  if (!activeQuest?.easterEggArt || activeQuest.day !== 30 || !els.sceneStage.classList.contains('is-object-open')) return;
-  if (!els.sceneStage.contains(event.target)) return;
-  if (event.target.closest('#hotspot, #easterEggHotspot')) return;
-  revealEasterEgg();
 }
 
 function showLetter() {
@@ -907,9 +889,14 @@ function showReward() {
   render();
 }
 
-function closeReward(returnToMap = false) {
+function closeReward(returnToMap = false, revealFinale = false) {
   els.modal.classList.remove('is-open');
   els.modal.setAttribute('aria-hidden', 'true');
+  if (revealFinale && activeQuest?.day === 30) {
+    revealEasterEgg();
+    els.backButton.focus();
+    return;
+  }
   if (returnToMap) {
     showView('map');
     activeQuest = null;
@@ -1035,8 +1022,6 @@ function resetCompletionData() {
   els.resetProgress.blur();
 }
 els.hotspot.addEventListener('click', handleObjectInteraction);
-els.easterEggHotspot.addEventListener('click', revealEasterEgg);
-document.addEventListener('click', handleSceneEasterEggClick, true);
 els.openJournal.addEventListener('click', openJournal);
 els.closeJournal.addEventListener('click', closeJournal);
 els.journalPrevious.addEventListener('click', () => changeJournalPage(-1));
@@ -1051,8 +1036,8 @@ els.nextJournalImage.addEventListener('click', () => changeJournalImage(1));
 els.resetProgress.addEventListener('click', resetCompletionData);
 els.closeLetter.addEventListener('click', closeLetter);
 els.backButton.addEventListener('click', () => showView('map'));
-els.closeReward.addEventListener('click', () => closeReward(false));
-els.returnButton.addEventListener('click', () => closeReward(true));
+els.closeReward.addEventListener('click', () => closeReward(false, true));
+els.returnButton.addEventListener('click', () => closeReward(true, true));
 els.modal.addEventListener('click', event => { if (event.target.classList.contains('modal-backdrop')) closeReward(false); });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && els.imageOverlay.classList.contains('is-open')) setOverlay(els.imageOverlay, false);
