@@ -18,11 +18,11 @@ const voucherGroups = [
   { title: 'Steam', from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png' },
   { title: 'Wild Horse Fund', from: 30, to: 30, image: 'assets/art/vouchers/voucher-cwhf.png' }
 ];
+const VOUCHER_CODE_PLACEHOLDER = 'Code to be added';
 
 const $ = selector => document.querySelector(selector);
 const els = {
-  mapView: $('#mapView'), sceneView: $('#sceneView'), mapWorld: $('#mapWorld'), fog: $('#fog'),
-  fogRevealHoles: $('#fogRevealHoles'),
+  mapView: $('#mapView'), sceneView: $('#sceneView'), mapWorld: $('#mapWorld'),
   markers: $('#questMarkers'), markerTemplate: $('#markerTemplate'), dayLabel: $('#dayLabel'),
   completedCount: $('#completedCount'), currentRegion: $('#currentRegion'), resetProgress: $('#resetProgress'), discoveryPercent: $('#discoveryPercent'), discoveryBar: $('#discoveryBar'),
   mapHint: $('#mapHint'), sceneStage: $('#sceneStage'), sceneArt: $('#sceneArt'), sceneOpenArt: $('#sceneOpenArt'), sceneRegion: $('#sceneRegion'),
@@ -86,29 +86,10 @@ function render() {
   els.currentRegion.textContent = quests.find(quest => quest.day === day)?.region ?? 'Awaiting November';
   els.discoveryPercent.textContent = `${progress}%`;
   els.discoveryBar.style.width = `${progress}%`;
-  renderFog();
   els.mapHint.textContent = day === 0
-    ? 'The path appears on November 1, 2026. Try ?day=12 while building.'
-    : 'Choose any revealed golden marker to begin a quest.';
+    ? 'The first quest marker appears on November 1, 2026. Try ?day=12 while building.'
+    : 'Choose any available marker to begin a quest.';
   renderMarkers();
-}
-
-function renderFog() {
-  const svgNamespace = 'http://www.w3.org/2000/svg';
-  els.fogRevealHoles.replaceChildren();
-
-  quests.filter(quest => quest.day <= day).forEach(quest => {
-    const reveal = document.createElementNS(svgNamespace, 'circle');
-    reveal.setAttribute('cx', quest.mapPosition.x);
-    reveal.setAttribute('cy', quest.mapPosition.y);
-    reveal.setAttribute('r', quest.day === 1 ? 15 : 13);
-    reveal.setAttribute('fill', 'black');
-    reveal.classList.add('fog-reveal');
-    if (quest.day === day) reveal.style.animationDelay = '180ms';
-    els.fogRevealHoles.append(reveal);
-  });
-
-  els.fog.classList.toggle('is-cleared', day >= 30);
 }
 
 function renderMarkers() {
@@ -236,7 +217,6 @@ function showReward() {
   els.rewardDay.textContent = `Day ${activeQuest.day} reward`;
   els.rewardTitle.textContent = activeQuest.reward.title;
   els.rewardText.textContent = activeQuest.reward.text;
-  els.rewardVoucher.href = activeQuest.reward.voucherUrl;
   els.rewardVoucherImage.src = activeQuest.reward.voucherImage;
   els.rewardVoucherImage.alt = activeQuest.reward.voucherAlt;
   els.modal.classList.add('is-open');
@@ -320,24 +300,53 @@ function changeJournalPage(change) {
   renderJournal();
 }
 
-function openVoucherParchment(group) {
-  els.parchmentTitle.textContent = group.title;
+async function copyVoucherCode(code) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(code);
+      return true;
+    }
+  } catch {}
+
+  const field = document.createElement('textarea');
+  field.value = code;
+  field.setAttribute('readonly', '');
+  field.style.position = 'fixed';
+  field.style.opacity = '0';
+  document.body.append(field);
+  field.select();
+  const copied = document.execCommand('copy');
+  field.remove();
+  return copied;
+}
+
+function openVoucherParchment(group, selectedDay = null) {
+  els.parchmentTitle.textContent = selectedDay ? `${group.title} · Day ${selectedDay}` : group.title;
   els.parchmentCodes.replaceChildren();
-  quests.filter(quest => quest.day >= group.from && quest.day <= group.to).forEach(quest => {
+  quests.filter(quest => quest.day >= group.from && quest.day <= group.to && (!selectedDay || quest.day === selectedDay)).forEach(quest => {
     const unlocked = completed.has(quest.id);
     const row = document.createElement('div');
     row.className = 'code-row';
     const code = voucherCodes[quest.day];
-    row.innerHTML = `<strong>Day ${quest.day}</strong><span class="code-value${unlocked ? '' : ' is-locked'}">${unlocked ? code : '••••••••••••'}</span><button class="copy-code" type="button" ${unlocked ? '' : 'disabled'}>${unlocked ? 'Copy' : 'Locked'}</button>`;
-    if (unlocked) row.querySelector('button').addEventListener('click', async event => {
-      await navigator.clipboard?.writeText(code);
-      event.currentTarget.textContent = 'Copied';
+    const codeReady = unlocked && code && code !== VOUCHER_CODE_PLACEHOLDER;
+    const displayedCode = unlocked ? code : '••••••••••••';
+    const buttonLabel = !unlocked ? 'Locked' : codeReady ? 'Copy' : 'Pending';
+    row.innerHTML = `<strong>Day ${quest.day}</strong><span class="code-value${unlocked ? '' : ' is-locked'}">${displayedCode}</span><button class="copy-code" type="button" ${codeReady ? '' : 'disabled'}>${buttonLabel}</button>`;
+    if (codeReady) row.querySelector('button').addEventListener('click', async event => {
+      const copied = await copyVoucherCode(code);
+      event.currentTarget.textContent = copied ? 'Copied' : 'Copy failed';
       window.setTimeout(() => { event.currentTarget.textContent = 'Copy'; }, 1200);
     });
     els.parchmentCodes.append(row);
   });
   setOverlay(els.parchmentOverlay, true);
   els.closeParchment.focus();
+}
+
+function openRewardVoucher() {
+  if (!activeQuest || !completed.has(activeQuest.id)) return;
+  const group = voucherGroups.find(item => activeQuest.day >= item.from && activeQuest.day <= item.to);
+  if (group) openVoucherParchment(group, activeQuest.day);
 }
 
 function completedGallery() {
@@ -378,6 +387,7 @@ function resetCompletionData() {
   els.resetProgress.blur();
 }
 els.hotspot.addEventListener('click', handleObjectInteraction);
+els.rewardVoucher.addEventListener('click', openRewardVoucher);
 els.openJournal.addEventListener('click', openJournal);
 els.closeJournal.addEventListener('click', closeJournal);
 els.journalPrevious.addEventListener('click', () => changeJournalPage(-1));
