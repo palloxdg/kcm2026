@@ -48,7 +48,7 @@ Purchased voucher codes are entered in the `voucherCodes` configuration near the
 - Voucher graphics remain PNG files under `assets/art/vouchers/` for crisp text and logos.
 - Day 1 shows `Letter.webp` three seconds after the mailbox reveal. Closing the letter opens the reward modal.
 - Day 30 uses a full-frame transition from the farm entrance to the adventurer meeting the horse.
-- Fog and marker positions are percentage-based and advance with the selected calendar day.
+- The full painted map is visible from the beginning. Quest markers are percentage-positioned and appear one by one with the selected calendar day.
 
 Voucher URLs in `js/data/quests.js` are provisional and must be replaced with purchased voucher links before delivery.
 
@@ -74,9 +74,19 @@ After changing a source JavaScript file, regenerate `js/app.bundle.js` before te
 
 ## Before launch
 
-1. Replace every provisional voucher URL with the purchased link.
+1. Replace every `Code to be added` entry in the centralized `voucherCodes` configuration with the purchased voucher code.
 2. Set `DEVELOPMENT_DAY` to `null` in `js/date.js`.
 3. Decide whether to retain the `?day=N` override.
 4. Clear stored completion data and test Days 1–30.
 5. Verify every voucher link in the final delivery environment.
 6. Test the layout on the intended desktop and mobile browsers.
+
+## Planned desktop application music
+
+The track below is reserved for the future standalone application's main menu and is not used by the website.
+
+Music: Nicholas Panek, via [Pixabay](https://pixabay.com/).
+
+Creator: [Nicholas Panek on Pixabay](https://pixabay.com/users/nickpanek-38266323/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=218762)
+
+The track is bundled at `assets/audio/nickpanek-peaceful-piano-background-music-218762.mp3`.
