@@ -901,12 +901,18 @@ function renderJournal() {
     voucherGroups.forEach(group => {
       const groupQuests = quests.filter(quest => quest.day >= group.from && quest.day <= group.to);
       const found = groupQuests.filter(quest => completed.has(quest.id)).length;
+      const revealed = day >= group.from;
       const tile = document.createElement('button');
       tile.type = 'button';
-      tile.className = 'journal-tile voucher-tile';
-      tile.setAttribute('aria-label', `${group.title}: ${found} of ${groupQuests.length} rewards found`);
-      tile.innerHTML = `<img src="${group.image}" alt="${group.title} voucher"><span class="voucher-progress">${found}/${groupQuests.length}</span><span class="journal-tile-caption">${group.title}</span>`;
-      tile.addEventListener('click', () => openVoucherParchment(group));
+      tile.className = `journal-tile voucher-tile${revealed ? '' : ' is-concealed'}`;
+      tile.disabled = !revealed;
+      tile.setAttribute('aria-label', revealed
+        ? `${group.title}: ${found} of ${groupQuests.length} rewards found`
+        : `${group.title} voucher opens on day ${group.from}`);
+      tile.innerHTML = revealed
+        ? `<img src="${group.image}" alt="${group.title} voucher"><span class="voucher-progress">${found}/${groupQuests.length}</span><span class="journal-tile-caption">${group.title}</span>`
+        : `<span class="voucher-concealed-message">Opens on day ${group.from}</span>`;
+      if (revealed) tile.addEventListener('click', () => openVoucherParchment(group));
       grid.append(tile);
     });
   } else {
