@@ -48,6 +48,7 @@ Purchased voucher codes are entered in the `voucherCodes` configuration near the
 - Voucher graphics remain PNG files under `assets/art/vouchers/` for crisp text and logos.
 - Day 1 shows `Letter.webp` three seconds after the mailbox reveal. Closing the letter opens the reward modal.
 - Day 30 uses a full-frame transition from the farm entrance to the adventurer meeting the horse.
+- After the Day 30 reward closes, the horse scene remains visible. The first **World map** click reveals the Easter-egg scene; the second returns to the map.
 - The full painted map is visible from the beginning. Quest markers are percentage-positioned and appear one by one with the selected calendar day.
 
 Voucher URLs in `js/data/quests.js` are provisional and must be replaced with purchased voucher links before delivery.
