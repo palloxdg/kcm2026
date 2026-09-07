@@ -7,6 +7,7 @@ const completed = loadCompleted();
 let activeQuest = null;
 let journalPage = 0;
 let journalImageIndex = 0;
+let easterEggVisible = false;
 
 // Add purchased codes here. A code is only shown after its matching quest is complete.
 const voucherCodes = Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added']));
@@ -122,6 +123,7 @@ function renderMarkers() {
 function enterQuest(id) {
   activeQuest = getQuest(id);
   if (!activeQuest) return;
+  easterEggVisible = false;
   els.mapWorld.style.setProperty('--zoom-x', `${activeQuest.mapPosition.x}%`);
   els.mapWorld.style.setProperty('--zoom-y', `${activeQuest.mapPosition.y}%`);
   els.mapView.classList.add('is-departing');
@@ -193,6 +195,7 @@ function handleObjectInteraction() {
 function revealEasterEgg() {
   if (!activeQuest?.easterEggArt || !els.sceneStage.classList.contains('is-object-open')) return;
   els.sceneOpenArt.src = activeQuest.easterEggArt;
+  easterEggVisible = true;
 }
 
 function showLetter() {
@@ -219,6 +222,7 @@ function showReward() {
   els.rewardText.textContent = activeQuest.reward.text;
   els.rewardVoucherImage.src = activeQuest.reward.voucherImage;
   els.rewardVoucherImage.alt = activeQuest.reward.voucherAlt;
+  els.returnButton.textContent = activeQuest.day === 30 ? 'Continue' : 'Return to the map';
   els.modal.classList.add('is-open');
   els.modal.setAttribute('aria-hidden', 'false');
   els.returnButton.focus();
@@ -229,7 +233,6 @@ function closeReward(returnToMap = false, revealFinale = false) {
   els.modal.classList.remove('is-open');
   els.modal.setAttribute('aria-hidden', 'true');
   if (revealFinale && activeQuest?.day === 30) {
-    revealEasterEgg();
     els.backButton.focus();
     return;
   }
@@ -241,6 +244,24 @@ function closeReward(returnToMap = false, revealFinale = false) {
   } else {
     els.hotspot.focus();
   }
+}
+
+function handleBackButton() {
+  const canRevealEasterEgg = activeQuest?.day === 30
+    && activeQuest.easterEggArt
+    && els.sceneStage.classList.contains('is-object-open')
+    && !easterEggVisible;
+
+  if (canRevealEasterEgg) {
+    revealEasterEgg();
+    els.backButton.focus();
+    return;
+  }
+
+  showView('map');
+  activeQuest = null;
+  easterEggVisible = false;
+  render();
 }
 
 function setOverlay(overlay, open) {
@@ -407,7 +428,7 @@ els.previousJournalImage.addEventListener('click', () => changeJournalImage(-1))
 els.nextJournalImage.addEventListener('click', () => changeJournalImage(1));
 els.resetProgress.addEventListener('click', resetCompletionData);
 els.closeLetter.addEventListener('click', closeLetter);
-els.backButton.addEventListener('click', () => showView('map'));
+els.backButton.addEventListener('click', handleBackButton);
 els.closeReward.addEventListener('click', () => closeReward(false, true));
 els.returnButton.addEventListener('click', () => closeReward(true, true));
 els.modal.addEventListener('click', event => { if (event.target.classList.contains('modal-backdrop')) closeReward(false); });
