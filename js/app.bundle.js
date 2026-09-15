@@ -39,7 +39,7 @@ const rewardMessages = [
   "The world is a little more beautiful with you in it",
   "Your passion for what you love is truly inspiring",
   "Here's to a woman who deserves every good thing",
-  "You have a way of every moment feel a little more special",
+  "You have a way of making every moment feel a little more special",
   "Thank you for always showing up, even on tough days",
   "Your kindness never goes unnoticed",
   "You are so much more than you give yourself credit for",
