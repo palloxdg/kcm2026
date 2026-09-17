@@ -28,7 +28,7 @@ const scenePresets = {
 };
 
 const rewardMessages = [
-  "You are a light that shines bright into every soul",
+  "🐴 A Wild Horse in your name",
   "The joy you bring to people that encounter you is a precious gift",
   "Your laugh could light up the darkest room",
   "Thank you for every stream that made a bad day better",
@@ -57,19 +57,19 @@ const rewardMessages = [
   "Today and always — thank you, Kate",
   "You are appreciated beyond what words can carry",
   "Tomorrow is the day — are you ready? 🎂",
-  "🐴 A Wild Horse in your name"
+  "A new adventure awaits"
 ];
 const voucherAssignments = [
-  { from: 1, to: 1, image: 'assets/art/vouchers/voucher-spa.png', url: 'https://www.wyjatkowyprezent.pl/prezent/pakiet-przezyc-chwila-odprezenia/', alt: 'Relaxation experience voucher' },
+  { from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', url: 'https://www.corollawildhorses.com/', alt: 'Corolla Wild Horse Fund voucher' },
   { from: 2, to: 8, image: 'assets/art/vouchers/voucher-amazon.png', url: 'https://www.amazon.pl', alt: 'Amazon gift voucher' },
   { from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png', url: 'https://giftcard.modivo.com/pl/page/ecard_choose', alt: 'MODIVO and CCC group gift voucher' },
   { from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png', url: 'https://www.morele.net/elektroniczna-karta-podarunkowa-50-zl-976823/', alt: 'Morele electronic gift voucher' },
   { from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png', url: 'https://store.steampowered.com/digitalgiftcards', alt: 'Steam digital gift card' },
-  { from: 30, to: 30, image: 'assets/art/vouchers/voucher-cwhf.png', url: 'https://www.corollawildhorses.com/', alt: 'Corolla Wild Horse Fund' }
+  { from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', url: 'https://fluxee.app/kcm2026/tempvoucher.pdf', alt: 'DTB Stuttgart voucher' }
 ];
 const landmarks = [
   { id: 'village-post', day: 1, title: 'A Letter at First Light', region: 'Dawn Harbor', x: 7, y: 88, scene: 'village', sceneArt: './assets/art/scene-day01-dawn-harbor.webp', sceneAlt: 'A golden dawn over a painted harbor village with a red wooden mailbox beside a cottage gate', openSceneArt: './assets/art/scene-day01-dawn-harbor-open.webp', revealBox: { x: 55, y: 43, w: 18, h: 34 }, letterArt: './assets/art/Letter.webp', hotspot: { x: 58.5, y: 48, w: 12, h: 28 }, icon: '💌', reward: 'The First Clue' },
-  { id: 'saltwind-beacon', day: 2, title: 'The Beacon Below', region: 'Saltwind Beacon', x: 9, y: 81, scene: 'summit', sceneArt: './assets/art/scene-day02-saltwind-beacon.webp', sceneAlt: 'A windswept lighthouse terrace above a turquoise sea with an antique brass signal lantern on a stone pedestal', openSceneArt: './assets/art/scene-day02-saltwind-beacon-open.webp', revealBox: { x: 47, y: 18, w: 22, h: 56 }, prompt: 'The old signal lantern has gone dark, but something glints behind its little brass door.', objectLabel: 'Inspect the signal lantern', hotspot: { x: 53.5, y: 20, w: 14.5, h: 52 }, icon: '🕯️', reward: 'A Guiding Light' },
+  { id: 'saltwind-beacon', day: 2, title: 'The Beacon Below', region: 'Saltwind Beacon', x: 9, y: 81, scene: 'summit', sceneArt: './assets/art/scene-day02-saltwind-beacon.webp', sceneAlt: 'A windswept lighthouse terrace above a turquoise sea with an antique brass signal lantern on a stone pedestal', openSceneArt: './assets/art/scene-day02-saltwind-beacon-open.webp', revealBox: { x: 47, y: 18, w: 22, h: 56 }, prompt: 'The old signal lantern has gone dark, but something glints behind its little brass door.', objectLabel: 'Inspect the lantern', interaction: 'inspect', hotspot: { x: 42, y: 18, w: 32, h: 62 }, icon: '🕯️', reward: 'A Guiding Light' },
   { id: 'mossbell-village', day: 3, title: 'News from Mossbell', region: 'Mossbell Village', x: 16, y: 72, scene: 'village', sceneArt: './assets/art/scene-day03-mossbell-village.webp', sceneAlt: 'A sunlit mossy village square with a closed carved wooden notice cabinet beside a fountain', openSceneArt: './assets/art/scene-day03-mossbell-village-open.webp', revealBox: { x: 43, y: 20, w: 36, h: 65 }, prompt: 'The square is quiet, but the notice cabinet holds news meant for one particular traveler.', objectLabel: 'Open the notice cabinet', hotspot: { x: 50, y: 20, w: 25, h: 62 }, icon: '📜', reward: 'Village Tidings' },
   {
     id: 'old-windmill',
@@ -596,6 +596,7 @@ export const quests = landmarks.map(landmark => {
     easterEggArt: landmark.easterEggArt ?? null,
     prompt: landmark.prompt ?? scene.prompt(landmark.region),
     objectLabel: landmark.objectLabel ?? scene.objectLabel,
+    interaction: landmark.interaction ?? 'inspect',
     hotspot: { ...(landmark.hotspot ?? scene.hotspot) },
     reward,
     final: Boolean(landmark.final)
