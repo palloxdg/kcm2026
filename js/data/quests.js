@@ -60,7 +60,7 @@ const rewardMessages = [
   "A new adventure awaits"
 ];
 const voucherAssignments = [
-  { from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', url: 'https://www.corollawildhorses.com/', alt: 'Corolla Wild Horse Fund voucher' },
+  { from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', url: 'https://fluxee.app/kcm2026/CWHF_Voucher.pdf', alt: 'Corolla Wild Horse Fund voucher' },
   { from: 2, to: 8, image: 'assets/art/vouchers/voucher-amazon.png', url: 'https://www.amazon.pl', alt: 'Amazon gift voucher' },
   { from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png', url: 'https://giftcard.modivo.com/pl/page/ecard_choose', alt: 'MODIVO and CCC group gift voucher' },
   { from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png', url: 'https://www.morele.net/elektroniczna-karta-podarunkowa-50-zl-976823/', alt: 'Morele electronic gift voucher' },
