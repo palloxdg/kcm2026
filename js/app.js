@@ -18,12 +18,12 @@ const voucherCodes = {
   1: 'TEST-CODE-1'
 };
 const voucherGroups = [
-  { title: 'Spa', from: 1, to: 1, image: 'assets/art/vouchers/voucher-spa.png' },
+  { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png' },
   { title: 'Amazon', from: 2, to: 8, image: 'assets/art/vouchers/voucher-amazon.png' },
   { title: 'MODIVO / CCC', from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png' },
   { title: 'Morele', from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png' },
   { title: 'Steam', from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png' },
-  { title: 'Wild Horse Fund', from: 30, to: 30, image: 'assets/art/vouchers/voucher-cwhf.png' }
+  { title: 'DTB Stuttgart', from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', externalUrl: 'https://fluxee.app/kcm2026/tempvoucher.pdf' }
 ];
 const VOUCHER_CODE_PLACEHOLDER = 'Code to be added';
 
@@ -434,7 +434,10 @@ function renderJournal() {
       tile.innerHTML = revealed
         ? `<img src="${group.image}" alt="${group.title} voucher"><span class="voucher-progress">${found}/${groupQuests.length}</span><span class="journal-tile-caption">${group.title}</span>`
         : `<span class="voucher-concealed-message">Opens on day ${group.from}</span>`;
-      if (revealed) tile.addEventListener('click', () => openVoucherParchment(group));
+      if (revealed) tile.addEventListener('click', () => {
+        if (group.externalUrl) window.open(group.externalUrl, '_blank', 'noopener,noreferrer');
+        else openVoucherParchment(group);
+      });
       grid.append(tile);
     });
   } else {
@@ -522,6 +525,10 @@ function openVoucherParchment(group, selectedDay = null) {
 
 function openRewardVoucher() {
   if (!activeQuest || !completed.has(activeQuest.id)) return;
+  if (activeQuest.day === 30) {
+    window.open(activeQuest.reward.voucherUrl, '_blank', 'noopener,noreferrer');
+    return;
+  }
   const group = voucherGroups.find(item => activeQuest.day >= item.from && activeQuest.day <= item.to);
   if (group) openVoucherParchment(group, activeQuest.day);
 }

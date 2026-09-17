@@ -31,7 +31,7 @@ const scenePresets = {
 };
 
 const rewardMessages = [
-  "You are a light that shines bright into every soul",
+  "🐴 A Wild Horse in your name",
   "The joy you bring to people that encounter you is a precious gift",
   "Your laugh could light up the darkest room",
   "Thank you for every stream that made a bad day better",
@@ -60,15 +60,15 @@ const rewardMessages = [
   "Today and always — thank you, Kate",
   "You are appreciated beyond what words can carry",
   "Tomorrow is the day — are you ready? 🎂",
-  "🐴 A Wild Horse in your name"
+  "A new adventure awaits"
 ];
 const voucherAssignments = [
-  { from: 1, to: 1, image: 'assets/art/vouchers/voucher-spa.png', url: 'https://www.wyjatkowyprezent.pl/prezent/pakiet-przezyc-chwila-odprezenia/', alt: 'Relaxation experience voucher' },
+  { from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', url: 'https://www.corollawildhorses.com/', alt: 'Corolla Wild Horse Fund voucher' },
   { from: 2, to: 8, image: 'assets/art/vouchers/voucher-amazon.png', url: 'https://www.amazon.pl', alt: 'Amazon gift voucher' },
   { from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png', url: 'https://giftcard.modivo.com/pl/page/ecard_choose', alt: 'MODIVO and CCC group gift voucher' },
   { from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png', url: 'https://www.morele.net/elektroniczna-karta-podarunkowa-50-zl-976823/', alt: 'Morele electronic gift voucher' },
   { from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png', url: 'https://store.steampowered.com/digitalgiftcards', alt: 'Steam digital gift card' },
-  { from: 30, to: 30, image: 'assets/art/vouchers/voucher-cwhf.png', url: 'https://www.corollawildhorses.com/', alt: 'Corolla Wild Horse Fund' }
+  { from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', url: 'https://fluxee.app/kcm2026/tempvoucher.pdf', alt: 'DTB Stuttgart voucher' }
 ];
 const landmarks = [
   { id: 'village-post', day: 1, title: 'A Letter at First Light', region: 'Dawn Harbor', x: 7, y: 88, scene: 'village', sceneArt: './assets/art/scene-day01-dawn-harbor.webp', sceneAlt: 'A golden dawn over a painted harbor village with a red wooden mailbox beside a cottage gate', openSceneArt: './assets/art/scene-day01-dawn-harbor-open.webp', revealBox: { x: 55, y: 43, w: 18, h: 34 }, letterArt: './assets/art/Letter.webp', hotspot: { x: 58.5, y: 48, w: 12, h: 28 }, icon: '💌', reward: 'The First Clue' },
@@ -660,12 +660,12 @@ const voucherCodes = {
   1: 'TEST-CODE-1'
 };
 const voucherGroups = [
-  { title: 'Spa', from: 1, to: 1, image: 'assets/art/vouchers/voucher-spa.png' },
+  { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png' },
   { title: 'Amazon', from: 2, to: 8, image: 'assets/art/vouchers/voucher-amazon.png' },
   { title: 'MODIVO / CCC', from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png' },
   { title: 'Morele', from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png' },
   { title: 'Steam', from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png' },
-  { title: 'Wild Horse Fund', from: 30, to: 30, image: 'assets/art/vouchers/voucher-cwhf.png' }
+  { title: 'DTB Stuttgart', from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', externalUrl: 'https://fluxee.app/kcm2026/tempvoucher.pdf' }
 ];
 const VOUCHER_CODE_PLACEHOLDER = 'Code to be added';
 
@@ -1076,7 +1076,10 @@ function renderJournal() {
       tile.innerHTML = revealed
         ? `<img src="${group.image}" alt="${group.title} voucher"><span class="voucher-progress">${found}/${groupQuests.length}</span><span class="journal-tile-caption">${group.title}</span>`
         : `<span class="voucher-concealed-message">Opens on day ${group.from}</span>`;
-      if (revealed) tile.addEventListener('click', () => openVoucherParchment(group));
+      if (revealed) tile.addEventListener('click', () => {
+        if (group.externalUrl) window.open(group.externalUrl, '_blank', 'noopener,noreferrer');
+        else openVoucherParchment(group);
+      });
       grid.append(tile);
     });
   } else {
@@ -1164,6 +1167,10 @@ function openVoucherParchment(group, selectedDay = null) {
 
 function openRewardVoucher() {
   if (!activeQuest || !completed.has(activeQuest.id)) return;
+  if (activeQuest.day === 30) {
+    window.open(activeQuest.reward.voucherUrl, '_blank', 'noopener,noreferrer');
+    return;
+  }
   const group = voucherGroups.find(item => activeQuest.day >= item.from && activeQuest.day <= item.to);
   if (group) openVoucherParchment(group, activeQuest.day);
 }
