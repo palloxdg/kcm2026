@@ -39,15 +39,15 @@ const rewardMessages = [
   "The world is a little more beautiful with you in it",
   "Your passion for what you love is truly inspiring",
   "Here's to a woman who deserves every good thing",
-  "You have a way of making every moment feel a little more special",
+  "You bring so much joy to so many people",
   "Thank you for always showing up, even on tough days",
   "Your kindness never goes unnoticed",
   "You are so much more than you give yourself credit for",
-  "Every little piece of you I've discovered is precious to me",
+  "Watching you grow has been an absolute privilege",
   "You have a gift for making people feel seen",
   "The care you put into everything you do is remarkable",
-  "A little something, simply because having you in my life is worth celebrating",
-  "You deserve warmth, laughter and all the little things that make your heart happy",
+  "Here's a small token of enormous appreciation",
+  "You deserve rest, adventure, and everything in between",
   "Thank you for being exactly who you are",
   "Your dedication is something truly rare",
   "Every day you inspire more people than you realise",
@@ -72,7 +72,7 @@ const voucherAssignments = [
 ];
 const landmarks = [
   { id: 'village-post', day: 1, title: 'A Letter at First Light', region: 'Dawn Harbor', x: 7, y: 88, scene: 'village', sceneArt: './assets/art/scene-day01-dawn-harbor.webp', sceneAlt: 'A golden dawn over a painted harbor village with a red wooden mailbox beside a cottage gate', openSceneArt: './assets/art/scene-day01-dawn-harbor-open.webp', revealBox: { x: 55, y: 43, w: 18, h: 34 }, letterArt: './assets/art/Letter.webp', hotspot: { x: 58.5, y: 48, w: 12, h: 28 }, icon: '💌', reward: 'The First Clue' },
-  { id: 'saltwind-beacon', day: 2, title: 'The Beacon Below', region: 'Saltwind Beacon', x: 9, y: 81, scene: 'summit', sceneArt: './assets/art/scene-day02-saltwind-beacon.webp', sceneAlt: 'A windswept lighthouse terrace above a turquoise sea with an antique brass signal lantern on a stone pedestal', openSceneArt: './assets/art/scene-day02-saltwind-beacon-open.webp', revealBox: { x: 47, y: 18, w: 22, h: 56 }, prompt: 'The old signal lantern has gone dark, but something glints behind its little brass door.', objectLabel: 'Inspect the signal lantern', hotspot: { x: 53.5, y: 20, w: 14.5, h: 52 }, icon: '🕯️', reward: 'A Guiding Light' },
+  { id: 'saltwind-beacon', day: 2, title: 'The Beacon Below', region: 'Saltwind Beacon', x: 9, y: 81, scene: 'summit', sceneArt: './assets/art/scene-day02-saltwind-beacon.webp', sceneAlt: 'A windswept lighthouse terrace above a turquoise sea with an antique brass signal lantern on a stone pedestal', openSceneArt: './assets/art/scene-day02-saltwind-beacon-open.webp', revealBox: { x: 47, y: 18, w: 22, h: 56 }, prompt: 'The old signal lantern has gone dark, but something glints behind its little brass door.', objectLabel: 'Inspect the lantern', interaction: 'inspect', hotspot: { x: 42, y: 18, w: 32, h: 62 }, icon: '🕯️', reward: 'A Guiding Light' },
   { id: 'mossbell-village', day: 3, title: 'News from Mossbell', region: 'Mossbell Village', x: 16, y: 72, scene: 'village', sceneArt: './assets/art/scene-day03-mossbell-village.webp', sceneAlt: 'A sunlit mossy village square with a closed carved wooden notice cabinet beside a fountain', openSceneArt: './assets/art/scene-day03-mossbell-village-open.webp', revealBox: { x: 43, y: 20, w: 36, h: 65 }, prompt: 'The square is quiet, but the notice cabinet holds news meant for one particular traveler.', objectLabel: 'Open the notice cabinet', hotspot: { x: 50, y: 20, w: 25, h: 62 }, icon: '📜', reward: 'Village Tidings' },
   {
     id: 'old-windmill',
@@ -599,6 +599,7 @@ const quests = landmarks.map(landmark => {
     easterEggArt: landmark.easterEggArt ?? null,
     prompt: landmark.prompt ?? scene.prompt(landmark.region),
     objectLabel: landmark.objectLabel ?? scene.objectLabel,
+    interaction: landmark.interaction ?? 'inspect',
     hotspot: { ...(landmark.hotspot ?? scene.hotspot) },
     reward,
     final: Boolean(landmark.final)
@@ -649,9 +650,15 @@ let activeQuest = null;
 let journalPage = 0;
 let journalImageIndex = 0;
 let easterEggVisible = false;
+let lanternDrag = null;
+let lanternProgress = 0;
+let lanternWipeDistance = 0;
 
 // Add purchased codes here. A code is only shown after its matching quest is complete.
-const voucherCodes = Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added']));
+const voucherCodes = {
+  ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
+  1: 'TEST-CODE-1'
+};
 const voucherGroups = [
   { title: 'Spa', from: 1, to: 1, image: 'assets/art/vouchers/voucher-spa.png' },
   { title: 'Amazon', from: 2, to: 8, image: 'assets/art/vouchers/voucher-amazon.png' },
@@ -668,7 +675,7 @@ const els = {
   markers: $('#questMarkers'), markerTemplate: $('#markerTemplate'), dayLabel: $('#dayLabel'),
   completedCount: $('#completedCount'), currentRegion: $('#currentRegion'), resetProgress: $('#resetProgress'), discoveryPercent: $('#discoveryPercent'), discoveryBar: $('#discoveryBar'),
   mapHint: $('#mapHint'), sceneStage: $('#sceneStage'), sceneArt: $('#sceneArt'), sceneOpenArt: $('#sceneOpenArt'), sceneRegion: $('#sceneRegion'),
-  sceneTitle: $('#sceneTitle'), scenePrompt: $('#scenePrompt'), hotspot: $('#hotspot'), backButton: $('#backButton'),
+  sceneTitle: $('#sceneTitle'), scenePrompt: $('#scenePrompt'), hotspot: $('#hotspot'), lanternWipeCanvas: $('#lanternWipeCanvas'), backButton: $('#backButton'),
   modal: $('#rewardModal'), rewardIcon: $('#rewardIcon'), rewardDay: $('#rewardDay'), rewardTitle: $('#rewardTitle'),
   rewardText: $('#rewardText'), rewardVoucher: $('#rewardVoucher'), rewardVoucherImage: $('#rewardVoucherImage'), closeReward: $('#closeReward'), returnButton: $('#returnButton'),
   letterOverlay: $('#letterOverlay'), letterImage: $('#letterImage'), closeLetter: $('#closeLetter'),
@@ -765,6 +772,7 @@ function enterQuest(id) {
   activeQuest = getQuest(id);
   if (!activeQuest) return;
   easterEggVisible = false;
+  resetLanternInteraction();
   els.mapWorld.style.setProperty('--zoom-x', `${activeQuest.mapPosition.x}%`);
   els.mapWorld.style.setProperty('--zoom-y', `${activeQuest.mapPosition.y}%`);
   els.mapView.classList.add('is-departing');
@@ -796,7 +804,15 @@ function enterQuest(id) {
       width: `${activeQuest.hotspot.w}%`, height: `${activeQuest.hotspot.h}%`
     });
     els.hotspot.querySelector('.hotspot-label').textContent = activeQuest.objectLabel;
+    const isLanternGame = activeQuest.interaction === 'lantern-wipe';
+    els.hotspot.classList.toggle('is-lantern-game', isLanternGame);
+    if (isLanternGame) {
+      els.hotspot.setAttribute('aria-label', 'Wipe the mist from the lantern glass, or press Enter');
+    } else {
+      els.hotspot.setAttribute('aria-label', activeQuest.objectLabel);
+    }
     showView('scene');
+    if (isLanternGame) window.requestAnimationFrame(prepareLanternWipe);
     els.hotspot.focus({ preventScroll: true });
     els.mapView.classList.remove('is-departing');
   }, 520);
@@ -831,6 +847,133 @@ function handleObjectInteraction() {
       showReward();
     }
   }, activeQuest.letterArt ? 3000 : 2900);
+}
+
+function resetLanternInteraction() {
+  lanternDrag = null;
+  lanternProgress = 0;
+  lanternWipeDistance = 0;
+  els.hotspot?.style.setProperty('--latch-progress', '0');
+  els.hotspot?.style.setProperty('--latch-offset', '0px');
+  els.hotspot?.classList.remove('is-lantern-dragging', 'is-lantern-nudged', 'is-lantern-released');
+  els.sceneStage?.classList.remove('is-lantern-igniting');
+}
+
+function prepareLanternWipe() {
+  const canvas = els.lanternWipeCanvas;
+  const rect = els.hotspot.getBoundingClientRect();
+  const scale = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.max(1, Math.round(rect.width * scale));
+  canvas.height = Math.max(1, Math.round(rect.height * scale));
+  const context = canvas.getContext('2d');
+  context.setTransform(scale, 0, 0, scale, 0, 0);
+  context.clearRect(0, 0, rect.width, rect.height);
+  const fog = context.createRadialGradient(rect.width * .52, rect.height * .53, 8, rect.width * .52, rect.height * .53, rect.width * .48);
+  fog.addColorStop(0, 'rgba(225,235,226,.82)');
+  fog.addColorStop(.55, 'rgba(204,219,211,.68)');
+  fog.addColorStop(1, 'rgba(184,204,196,.18)');
+  context.fillStyle = fog;
+  context.fillRect(0, 0, rect.width, rect.height);
+  context.globalAlpha = .28;
+  context.fillStyle = '#f4f5e9';
+  for (let i = 0; i < 34; i += 1) {
+    const x = (i * 73 % 97) / 97 * rect.width;
+    const y = (i * 47 % 89) / 89 * rect.height;
+    context.beginPath();
+    context.arc(x, y, 2 + (i % 4), 0, Math.PI * 2);
+    context.fill();
+  }
+  context.globalAlpha = 1;
+}
+
+function wipeLanternAt(clientX, clientY) {
+  const canvas = els.lanternWipeCanvas;
+  const rect = canvas.getBoundingClientRect();
+  const context = canvas.getContext('2d');
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  context.save();
+  context.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+  context.globalCompositeOperation = 'destination-out';
+  const radius = Math.max(34, Math.min(rect.width, rect.height) * .12);
+  const gradient = context.createRadialGradient(clientX - rect.left, clientY - rect.top, radius * .35, clientX - rect.left, clientY - rect.top, radius);
+  gradient.addColorStop(0, 'rgba(0,0,0,1)');
+  gradient.addColorStop(1, 'rgba(0,0,0,0)');
+  context.fillStyle = gradient;
+  context.beginPath();
+  context.arc(clientX - rect.left, clientY - rect.top, radius, 0, Math.PI * 2);
+  context.fill();
+  context.restore();
+}
+
+function updateLanternProgress(progress) {
+  lanternProgress = Math.max(0, Math.min(1, progress));
+  els.hotspot.style.setProperty('--latch-progress', String(lanternProgress));
+  els.hotspot.style.setProperty('--latch-offset', `${lanternProgress * 58}px`);
+}
+
+function completeLanternInteraction() {
+  if (activeQuest?.interaction !== 'lantern-wipe' || els.sceneStage.classList.contains('is-object-open')) return;
+  updateLanternProgress(1);
+  lanternDrag = null;
+  els.hotspot.classList.remove('is-lantern-dragging');
+  els.hotspot.classList.add('is-lantern-released');
+  els.sceneStage.classList.add('is-lantern-igniting');
+  handleObjectInteraction();
+  window.setTimeout(() => els.sceneStage.classList.remove('is-lantern-igniting'), 1500);
+}
+
+function handleLanternPointerDown(event) {
+  if (activeQuest?.interaction !== 'lantern-wipe' || els.sceneStage.classList.contains('is-object-open')) return;
+  event.preventDefault();
+  lanternDrag = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
+  els.hotspot.setPointerCapture?.(event.pointerId);
+  els.hotspot.classList.add('is-lantern-dragging');
+  wipeLanternAt(event.clientX, event.clientY);
+}
+
+function handleLanternPointerMove(event) {
+  if (!lanternDrag || event.pointerId !== lanternDrag.pointerId) return;
+  event.preventDefault();
+  const distance = Math.hypot(event.clientX - lanternDrag.x, event.clientY - lanternDrag.y);
+  lanternWipeDistance += distance;
+  lanternDrag.x = event.clientX;
+  lanternDrag.y = event.clientY;
+  wipeLanternAt(event.clientX, event.clientY);
+  const target = Math.max(420, els.hotspot.getBoundingClientRect().width * 2.2);
+  updateLanternProgress(lanternWipeDistance / target);
+  if (lanternProgress >= 1) completeLanternInteraction();
+}
+
+function finishLanternPointer(event) {
+  if (!lanternDrag || event.pointerId !== lanternDrag.pointerId) return;
+  els.hotspot.releasePointerCapture?.(event.pointerId);
+  lanternDrag = null;
+  els.hotspot.classList.remove('is-lantern-dragging');
+  if (lanternProgress >= 1) {
+    completeLanternInteraction();
+  }
+}
+
+function handleHotspotActivation(event) {
+  if (activeQuest?.interaction === 'lantern-wipe' && !els.sceneStage.classList.contains('is-object-open')) {
+    if (event.detail === 0) completeLanternInteraction();
+    else {
+      els.hotspot.classList.remove('is-lantern-nudged');
+      void els.hotspot.offsetWidth;
+      els.hotspot.classList.add('is-lantern-nudged');
+    }
+    return;
+  }
+  handleObjectInteraction();
+}
+
+function handleHotspotKeydown(event) {
+  if (activeQuest?.interaction !== 'lantern-wipe' || els.sceneStage.classList.contains('is-object-open')) return;
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    completeLanternInteraction();
+  }
 }
 
 function revealEasterEgg() {
@@ -999,11 +1142,19 @@ function openVoucherParchment(group, selectedDay = null) {
     const codeReady = unlocked && code && code !== VOUCHER_CODE_PLACEHOLDER;
     const displayedCode = unlocked ? code : '••••••••••••';
     const buttonLabel = !unlocked ? 'Locked' : codeReady ? 'Copy' : 'Pending';
-    row.innerHTML = `<strong>Day ${quest.day}</strong><span class="code-value${unlocked ? '' : ' is-locked'}">${displayedCode}</span><button class="copy-code" type="button" ${codeReady ? '' : 'disabled'}>${buttonLabel}</button>`;
+    row.innerHTML = `<strong>Day ${quest.day}</strong><span class="code-value${unlocked ? '' : ' is-locked'}">${displayedCode}</span><button class="copy-code" type="button" ${codeReady ? '' : 'disabled'}>${buttonLabel}</button><span class="copy-status" role="status" aria-live="polite"></span>`;
     if (codeReady) row.querySelector('button').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      const status = row.querySelector('.copy-status');
+      button.classList.remove('is-pressed');
+      void button.offsetWidth;
+      button.classList.add('is-pressed');
       const copied = await copyVoucherCode(code);
-      event.currentTarget.textContent = copied ? 'Copied' : 'Copy failed';
-      window.setTimeout(() => { event.currentTarget.textContent = 'Copy'; }, 1200);
+      status.textContent = copied ? 'Code copied to clipboard' : 'Could not copy the code';
+      status.classList.toggle('is-error', !copied);
+      status.classList.add('is-visible');
+      window.setTimeout(() => button.classList.remove('is-pressed'), 220);
+      window.setTimeout(() => status.classList.remove('is-visible'), 2200);
     });
     els.parchmentCodes.append(row);
   });
@@ -1054,7 +1205,12 @@ function resetCompletionData() {
   render();
   els.resetProgress.blur();
 }
-els.hotspot.addEventListener('click', handleObjectInteraction);
+els.hotspot.addEventListener('click', handleHotspotActivation);
+els.hotspot.addEventListener('keydown', handleHotspotKeydown);
+els.hotspot.addEventListener('pointerdown', handleLanternPointerDown);
+els.hotspot.addEventListener('pointermove', handleLanternPointerMove);
+els.hotspot.addEventListener('pointerup', finishLanternPointer);
+els.hotspot.addEventListener('pointercancel', finishLanternPointer);
 els.rewardVoucher.addEventListener('click', openRewardVoucher);
 els.openJournal.addEventListener('click', openJournal);
 els.closeJournal.addEventListener('click', closeJournal);
