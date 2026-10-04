@@ -20,7 +20,7 @@ const voucherCodes = {
 const voucherGroups = [
   { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF_Voucher.pdf' },
   { title: 'Allegro', from: 2, to: 8, image: 'assets/art/vouchers/voucher-allegro.png' },
-  { title: 'MODIVO / CCC', from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png' },
+  { title: 'Zalando', from: 9, to: 15, image: 'assets/art/vouchers/voucher-zalando.png' },
   { title: 'Morele', from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png' },
   { title: 'Steam', from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png' },
   { title: 'DTB Stuttgart', from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', externalUrl: 'https://fluxee.app/kcm2026/tempvoucher.pdf' }
