@@ -62,7 +62,7 @@ const rewardMessages = [
 const voucherAssignments = [
   { from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', url: 'https://fluxee.app/kcm2026/CWHF_Voucher.pdf', alt: 'Corolla Wild Horse Fund voucher' },
   { from: 2, to: 8, image: 'assets/art/vouchers/voucher-allegro.png', url: 'https://www.allegro.pl', alt: 'Allegro gift voucher' },
-  { from: 9, to: 15, image: 'assets/art/vouchers/voucher-ccc.png', url: 'https://giftcard.modivo.com/pl/page/ecard_choose', alt: 'MODIVO and CCC group gift voucher' },
+  { from: 9, to: 15, image: 'assets/art/vouchers/voucher-zalando.png', url: 'https://www.zalando.pl/karty-upominkowe/tylko-dla-ciebie-zzgz000qw-000.html', alt: 'Zalando gift voucher' },
   { from: 16, to: 22, image: 'assets/art/vouchers/voucher-morele.png', url: 'https://www.morele.net/elektroniczna-karta-podarunkowa-50-zl-976823/', alt: 'Morele electronic gift voucher' },
   { from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png', url: 'https://store.steampowered.com/digitalgiftcards', alt: 'Steam digital gift card' },
   { from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', url: 'https://fluxee.app/kcm2026/tempvoucher.pdf', alt: 'DTB Stuttgart voucher' }
