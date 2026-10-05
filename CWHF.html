@@ -24,6 +24,8 @@
     img { display: block; width: 100%; height: auto; }
     .certificate-area img { opacity: .78; }
     .downloads { margin-top: 32px; }
+    .videos { margin-top: 32px; }
+    .video-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
     h2 { font: normal 1.65rem Georgia, serif; margin: 0 0 16px; color: #F3F5F2; }
     .files { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .file { display: flex; flex-direction: column; gap: 18px; padding: 22px; background: white; border: 1px solid #d5dad7; border-radius: 6px; }
@@ -47,6 +49,7 @@
       header { align-items: start; flex-direction: column; gap: 12px; margin-bottom: 18px; }
       .eyebrow { font-size: .8125rem; letter-spacing: .09em; }
       .files { grid-template-columns: 1fr; }
+      .video-cards { grid-template-columns: 1fr; }
       .image-cards { grid-template-columns: 1fr; }
       .file { padding: 18px; gap: 14px; }
     }
@@ -65,6 +68,19 @@
       </a>
     </figure>
     </div>
+    <section class="videos" aria-labelledby="videos-title">
+      <h2 id="videos-title">Watch the videos</h2>
+      <div class="video-cards">
+        <article class="file">
+          <h3>Brio’s most recent update video</h3>
+          <a class="button" href="https://youtu.be/Zh3QH40eBjk" target="_blank" rel="noopener" aria-label="Watch Brio’s most recent update on YouTube (opens in a new tab)">Watch on YouTube</a>
+        </article>
+        <article class="file">
+          <h3>A special thank you from CWHF</h3>
+          <a class="button" href="https://www.youtube.com/watch?v=DTK8ypkPhMc" target="_blank" rel="noopener" aria-label="Watch a special thank you from CWHF on YouTube (opens in a new tab)">Watch on YouTube</a>
+        </article>
+      </div>
+    </section>
     <section class="downloads" aria-labelledby="downloads-title">
       <h2 id="downloads-title">Download the documents</h2>
       <div class="files">
@@ -99,14 +115,14 @@
           </div>
         </article>
         <article class="image-card">
-          <a class="image-preview" href="Brio-artistic-6000x4000.jpg" target="_blank" rel="noopener" aria-label="Open Brio’s full-size painting">
+          <a class="image-preview" href="Brio-artistic-6000x4000.png" target="_blank" rel="noopener" aria-label="Open Brio’s full-size painting">
             <img src="Brio-painting-preview.jpg" width="1200" height="800" loading="lazy" alt="An oil-painting-style portrait of Brio alone against a softly painted, sunlit meadow.">
           </a>
           <div class="image-content">
             <h3>Print &amp; frame painting</h3>
             <p>An artistic portrait of Brio to print and frame.</p>
             <p class="meta">PNG · 6000 × 4000 pixels · 54 MB. For an 8 × 10 print, choose your crop when printing.</p>
-            <a class="button" href="Brio-artistic-6000x4000.jpg" download="Brio-artistic-6000x4000.jpg">Download painting</a>
+            <a class="button" href="Brio-artistic-6000x4000.png" download="Brio-artistic-6000x4000.png">Download painting</a>
           </div>
         </article>
       </div>
