@@ -660,7 +660,7 @@ const voucherCodes = {
   1: 'TEST-CODE-1'
 };
 const voucherGroups = [
-  { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF_Voucher.pdf' },
+  { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF.html' },
   { title: 'Morele', from: 2, to: 8, image: 'assets/art/vouchers/voucher-morele.png' },
   { title: 'Zalando', from: 9, to: 15, image: 'assets/art/vouchers/voucher-zalando.png' },
   { title: 'Allegro', from: 16, to: 22, image: 'assets/art/vouchers/voucher-allegro.png' },
