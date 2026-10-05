@@ -8,20 +8,22 @@
   <link rel="canonical" href="https://fluxee.app/kcm2026/CWHF.html">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231b3935'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Georgia' font-size='24' fill='white'%3EB%3C/text%3E%3C/svg%3E">
   <style>
-    :root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #203c37; background: #f4f6f5; }
+    :root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #203c37; background: #142D26; }
     * { box-sizing: border-box; }
     body { margin: 0; }
     main { width: min(1140px, 100% - 40px); margin: 0 auto; padding: 42px 0 36px; }
-    header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 26px; }
+    .certificate-area { padding: 26px; background: #dbe6df url('Brio.png') center center / cover no-repeat; border-radius: 8px; }
+    header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 26px; padding: 18px; background: rgb(255 255 255 / 88%); border-radius: 5px; }
     .eyebrow { margin: 0 0 9px; font-size: .875rem; letter-spacing: .13em; text-transform: uppercase; font-weight: 650; }
     h1 { font: normal clamp(2.2rem, 5vw, 3.8rem)/1.1 Georgia, serif; margin: 0; letter-spacing: -.035em; }
-    .open { font-size: .9375rem; color: inherit; text-underline-offset: 5px; white-space: nowrap; padding: 8px 0; }
+    .open { display: inline-block; font-size: .9375rem; font-weight: 600; color: white; background: #24713e; text-decoration: none; text-align: center; padding: 13px 18px; border-radius: 4px; }
+    .open:hover { background: #19582e; }
     a:focus-visible { outline: 3px solid #b36420; outline-offset: 5px; }
-    figure { margin: 0; background: #eae9e7; box-shadow: 0 12px 38px #203c3714; border: 1px solid #d5dad7; }
+    figure { margin: 0; box-shadow: 0 12px 38px #203c3714; border: 1px solid #d5dad7; }
     figure a { display: block; }
-    img { display: block; width: 100%; height: auto; }
+    img { display: block; width: 100%; height: auto; opacity: .78; }
     .downloads { margin-top: 32px; }
-    h2 { font: normal 1.65rem Georgia, serif; margin: 0 0 16px; }
+    h2 { font: normal 1.65rem Georgia, serif; margin: 0 0 16px; color: #F3F5F2; }
     .files { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .file { display: flex; flex-direction: column; gap: 18px; padding: 22px; background: white; border: 1px solid #d5dad7; border-radius: 6px; }
     h3 { margin: 0 0 6px; font-size: 1rem; font-weight: 650; }
@@ -30,6 +32,7 @@
     .button:hover { background: #31564d; }
     @media (max-width: 640px) {
       main { width: calc(100% - 28px); padding-top: 28px; }
+      .certificate-area { padding: 12px; }
       header { align-items: start; flex-direction: column; gap: 12px; margin-bottom: 18px; }
       .eyebrow { font-size: .8125rem; letter-spacing: .09em; }
       .files { grid-template-columns: 1fr; }
@@ -39,6 +42,7 @@
 </head>
 <body>
   <main>
+    <div class="certificate-area">
     <header>
       <div><p class="eyebrow">Corolla Wild Horse Fund</p><h1>Katarzyna &amp; Brio</h1></div>
       <a class="open" href="Katarzyna.pdf" target="_blank" rel="noopener">Open certificate PDF</a>
@@ -48,6 +52,7 @@
         <img src="katarzyna-certificate.jpg" width="2400" height="1855" alt="Corolla Wild Horse Sponsor certificate: Katarzyna is a proud sponsor of rescued Banker horse Brio. Signed by Chris Winter, Chief Executive Officer, October 5, 2026.">
       </a>
     </figure>
+    </div>
     <section class="downloads" aria-labelledby="downloads-title">
       <h2 id="downloads-title">Download the documents</h2>
       <div class="files">
