@@ -13,9 +13,11 @@
     body { margin: 0; }
     main { width: min(1140px, 100% - 40px); margin: 0 auto; padding: 42px 0 36px; }
     .certificate-area { padding: 26px; background: #dbe6df url('Brio.png') center center / cover no-repeat; border-radius: 8px; }
-    header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 26px; padding: 18px; background: rgb(255 255 255 / 88%); border-radius: 5px; }
-    .eyebrow { margin: 0 0 9px; font-size: .875rem; letter-spacing: .13em; text-transform: uppercase; font-weight: 650; }
-    h1 { font: normal clamp(2.2rem, 5vw, 3.8rem)/1.1 Georgia, serif; margin: 0; letter-spacing: -.035em; }
+    header { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 18px; margin-bottom: 16px; padding: 14px 18px; background: rgb(255 255 255 / 88%); border-radius: 5px; }
+    .eyebrow { margin: 0 0 6px; font-size: .875rem; letter-spacing: .13em; text-transform: uppercase; font-weight: 650; }
+    h1 { font: normal clamp(1.9rem, 4vw, 2.7rem)/1.1 Georgia, serif; margin: 0; letter-spacing: -.035em; }
+    .sponsorship { margin: 0; font-size: 1rem; line-height: 1.5; text-align: center; }
+    header .open { justify-self: end; }
     .open { display: inline-block; font-size: .9375rem; font-weight: 600; color: white; background: #24713e; text-decoration: none; text-align: center; padding: 13px 18px; border-radius: 4px; }
     .open:hover { background: #19582e; }
     a:focus-visible { outline: 3px solid #b36420; outline-offset: 5px; }
@@ -42,11 +44,13 @@
     .image-content h3 { font: normal 1.6rem Georgia, serif; margin: 0; }
     .image-content p { margin: 0; line-height: 1.55; }
     .image-content .button { margin-top: auto; }
+    @media (max-width: 1050px) { header { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr); } }
     @media (max-width: 900px) { .image-cards { grid-template-columns: 1fr; } }
     @media (max-width: 640px) {
       main { width: calc(100% - 28px); padding-top: 28px; }
       .certificate-area { padding: 12px; }
-      header { align-items: start; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+      header { grid-template-columns: 1fr; justify-items: center; gap: 12px; margin-bottom: 18px; text-align: center; }
+      header .open { justify-self: center; }
       .eyebrow { font-size: .8125rem; letter-spacing: .09em; }
       .files { grid-template-columns: 1fr; }
       .video-cards { grid-template-columns: 1fr; }
@@ -60,10 +64,11 @@
     <div class="certificate-area">
     <header>
       <div><p class="eyebrow">Corolla Wild Horse Fund</p><h1>Kate &amp; Brio</h1></div>
+      <p class="sponsorship">A sponsorship in your name, renewed each year.</p>
       <a class="open" href="Katarzyna.pdf" target="_blank" rel="noopener">Open certificate PDF</a>
     </header>
-    <figure aria-label="Katarzyna’s sponsorship certificate">
-      <a href="Katarzyna.pdf" target="_blank" rel="noopener" aria-label="Open Katarzyna’s certificate as a PDF">
+    <figure aria-label="Kate’s sponsorship certificate">
+      <a href="Katarzyna.pdf" target="_blank" rel="noopener" aria-label="Open Kate’s certificate as a PDF">
         <img src="katarzyna-certificate.jpg" width="2400" height="1855" alt="Corolla Wild Horse Sponsor certificate: Katarzyna is a proud sponsor of rescued Banker horse Brio. Signed by Chris Winter, Chief Executive Officer, October 5, 2026.">
       </a>
     </figure>
@@ -84,7 +89,7 @@
     <section class="downloads" aria-labelledby="downloads-title">
       <h2 id="downloads-title">Download the documents</h2>
       <div class="files">
-        <article class="file"><div><h3>Kate’s certificate</h3><p class="meta">PDF · 379 KB</p></div><a class="button" href="Katarzyna.pdf" download="Katarzyna.pdf" aria-label="Download Katarzyna’s certificate PDF">Download PDF</a></article>
+        <article class="file"><div><h3>Kate’s certificate</h3><p class="meta">PDF · 379 KB</p></div><a class="button" href="Katarzyna.pdf" download="Katarzyna.pdf" aria-label="Download Kate’s certificate PDF">Download PDF</a></article>
         <article class="file"><div><h3>About CWHF 2025</h3><p class="meta">PDF · 157 KB</p></div><a class="button" href="About%20CWHF%202025.pdf" download="About CWHF 2025.pdf" aria-label="Download About CWHF 2025 PDF">Download PDF</a></article>
         <article class="file"><div><h3>Brio’s biography</h3><p class="meta">PDF · 4.4 MB</p></div><a class="button" href="Brio%20Bio.pdf" download="Brio Bio.pdf" aria-label="Download Brio’s biography PDF">Download PDF</a></article>
       </div>
@@ -115,14 +120,14 @@
           </div>
         </article>
         <article class="image-card">
-          <a class="image-preview" href="Brio-artistic-6000x4000.jpg" target="_blank" rel="noopener" aria-label="Open Brio’s full-size painting">
+          <a class="image-preview" href="Brio-artistic-6000x4000.png" target="_blank" rel="noopener" aria-label="Open Brio’s full-size painting">
             <img src="Brio-painting-preview.jpg" width="1200" height="800" loading="lazy" alt="An oil-painting-style portrait of Brio alone against a softly painted, sunlit meadow.">
           </a>
           <div class="image-content">
             <h3>Print &amp; frame painting</h3>
             <p>An artistic portrait of Brio to print and frame.</p>
             <p class="meta">PNG · 6000 × 4000 pixels · 54 MB. For an 8 × 10 print, choose your crop when printing.</p>
-            <a class="button" href="Brio-artistic-6000x4000.jpng" download="Brio-artistic-6000x4000.jpg">Download painting</a>
+            <a class="button" href="Brio-artistic-6000x4000.png" download="Brio-artistic-6000x4000.png">Download painting</a>
           </div>
         </article>
       </div>
