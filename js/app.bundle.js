@@ -657,7 +657,7 @@ let lanternWipeDistance = 0;
 // Add purchased codes here. A code is only shown after its matching quest is complete.
 const voucherCodes = {
   ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
-  1: 'TEST-CODE-1'
+  2: 'TEST-CODE-1'
 };
 const voucherGroups = [
   { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF.html' },
