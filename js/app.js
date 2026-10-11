@@ -8,6 +8,7 @@ let activeQuest = null;
 let journalPage = 0;
 let journalImageIndex = 0;
 let easterEggVisible = false;
+let finaleScrollFrame = null;
 let lanternDrag = null;
 let lanternProgress = 0;
 let lanternWipeDistance = 0;
@@ -127,6 +128,7 @@ function renderMarkers() {
 }
 
 function enterQuest(id) {
+  hideFinaleText();
   activeQuest = getQuest(id);
   if (!activeQuest) return;
   easterEggVisible = false;
@@ -177,6 +179,7 @@ function enterQuest(id) {
 }
 
 function showView(view) {
+  if (view !== 'scene') hideFinaleText();
   const scene = view === 'scene';
   els.mapView.classList.toggle('is-active', !scene);
   els.sceneView.classList.toggle('is-active', scene);
@@ -338,6 +341,43 @@ function revealEasterEgg() {
   if (!activeQuest?.easterEggArt || !els.sceneStage.classList.contains('is-object-open')) return;
   els.sceneOpenArt.src = activeQuest.easterEggArt;
   easterEggVisible = true;
+  showFinaleText();
+}
+
+// Scroll slowly from below the frame and leave the final words visible.
+function hideFinaleText() {
+  cancelAnimationFrame(finaleScrollFrame);
+  finaleScrollFrame = null;
+  $('#finaleText').hidden = true;
+  $('#finaleText').classList.remove('is-scrolling');
+}
+
+function showFinaleText() {
+  hideFinaleText();
+  const panel = $('#finaleText');
+  panel.hidden = false;
+  panel.scrollTop = 0;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      || document.body.classList.contains('reduced-motion')) return;
+  panel.classList.add('is-scrolling');
+  let previous = null;
+  const begins = performance.now() + 1000;
+  let position = 0;
+  const scroll = now => {
+    if (panel.hidden) return;
+    const elapsed = previous === null ? 0 : Math.min(now - previous, 100);
+    previous = now;
+    if (now >= begins && !panel.matches(':hover, :focus-within')) {
+      position += elapsed * 0.012;
+      panel.scrollTop = position;
+    } else {
+      position = panel.scrollTop;
+    }
+    if (panel.scrollTop < panel.scrollHeight - panel.clientHeight - 1) {
+      finaleScrollFrame = requestAnimationFrame(scroll);
+    }
+  };
+  finaleScrollFrame = requestAnimationFrame(scroll);
 }
 
 function showLetter() {
