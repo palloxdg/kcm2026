@@ -612,7 +612,7 @@ const START = new Date(2026, 10, 1);
 const END = new Date(2026, 10, 30, 23, 59, 59, 999);
 
 // Temporary preview default. Set to null before launch to use the real date.
-const DEVELOPMENT_DAY = 1;
+//const DEVELOPMENT_DAY = 1;
 
 function getAdventureDay(search = window.location.search, now = new Date()) {
   const debug = Number.parseInt(new URLSearchParams(search).get('day'), 10);
