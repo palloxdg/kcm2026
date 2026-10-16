@@ -95,7 +95,7 @@ function render() {
   els.discoveryPercent.textContent = `${progress}%`;
   els.discoveryBar.style.width = `${progress}%`;
   els.mapHint.textContent = day === 0
-    ? 'The first quest marker appears on November 1, 2026. Try ?day=12 while building.'
+    ? 'The first quest marker appears on November 1, 2026.'
     : 'Choose any available marker to begin a quest.';
   renderMarkers();
 }
