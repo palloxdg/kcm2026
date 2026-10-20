@@ -659,6 +659,7 @@ let lanternWipeDistance = 0;
 const voucherCodes = {
   ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
   2: 'TEST-CODE-1'
+  3: 'TEST-CODE-2'
 };
 const voucherGroups = [
   { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF.html' },
