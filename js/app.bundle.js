@@ -658,8 +658,34 @@ let lanternWipeDistance = 0;
 // Add purchased codes here. A code is only shown after its matching quest is complete.
 const voucherCodes = {
   ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
-  2: 'TEST-CODE-1',
-  3: 'TEST-CODE-2'
+  2: 'MORELE-CODE-1',
+  3: 'MORELE-CODE-2',
+  4: 'MORELE-CODE-3',
+  5: 'MORELE-CODE-4',
+  6: 'MORELE-CODE-5',
+  7: 'MORELE-CODE-6',
+  8: 'MORELE-CODE-7',
+  9: 'ZALANDO-CODE-1',
+  10: 'ZALANDO-CODE-2',
+  11: 'ZALANDO-CODE-3',
+  12: 'ZALANDO-CODE-4',
+  13: 'ZALANDO-CODE-5',
+  14: 'ZALANDO-CODE-6',
+  15: 'ZALANDO-CODE-7',
+  16: 'ALLEGRO-CODE-1',
+  17: 'ALLEGRO-CODE-2',
+  18: 'ALLEGRO-CODE-3',
+  19: 'ALLEGRO-CODE-4',
+  20: 'ALLEGRO-CODE-5',
+  21: 'ALLEGRO-CODE-6',
+  22: 'ALLEGRO-CODE-7',
+  23: 'STEAM-CODE-1',
+  24: 'STEAM-CODE-2',
+  25: 'STEAM-CODE-3',
+  26: 'STEAM-CODE-4',
+  27: 'STEAM-CODE-5',
+  28: 'STEAM-CODE-6',
+  29: 'STEAM-CODE-7'
 };
 const voucherGroups = [
   { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF.html' },
