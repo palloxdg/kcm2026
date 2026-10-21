@@ -1037,7 +1037,7 @@ function showFinaleText() {
     const elapsed = previous === null ? 0 : Math.min(now - previous, 100);
     previous = now;
     if (now >= begins && !panel.matches(':hover, :focus-within')) {
-      position += elapsed * 0.016;
+      position += elapsed * 0.015;
       panel.scrollTop = position;
     } else {
       position = panel.scrollTop;
