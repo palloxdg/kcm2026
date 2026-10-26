@@ -6,10 +6,22 @@
   <meta name="theme-color" content="#13281f">
   <meta name="description" content="Kate's November birthday adventure">
   <title>Kate's November Adventure</title>
-  <link rel="stylesheet" href="./css/styles.css?v=finale-text-3">
+  <link rel="stylesheet" href="./css/styles.css?v=video-intro-2">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231b3935'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Georgia' font-size='24' fill='white'%3EK%3C/text%3E%3C/svg%3E">
 </head>
 <body>
+  <dialog id="introDialog" class="intro-dialog" aria-label="Kate's November Adventure introduction">
+    <video id="introVideo" class="intro-video" playsinline preload="none" aria-label="Kate's November Adventure video" hidden></video>
+    <div id="introWelcome" class="intro-welcome">
+      <p class="eyebrow">A little surprise for you</p>
+      <h1>Your adventure awaits, Kate.</h1>
+      <p>Make yourself comfortable and turn on your sound.</p>
+      <button id="introStart" class="primary-button" type="button">Open your surprise</button>
+      <p id="introStatus" class="intro-status" role="status"></p>
+    </div>
+    <button id="introSkip" class="intro-skip" type="button">Start</button>
+  </dialog>
+  <script src="./js/intro.js?v=2"></script>
   <div class="app-shell">
 <main id="game" class="game">
       <section id="mapView" class="view map-view is-active" aria-labelledby="mapTitle">
