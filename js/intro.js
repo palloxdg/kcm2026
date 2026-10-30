@@ -8,9 +8,12 @@
   const skip = document.getElementById('introSkip');
   const status = document.getElementById('introStatus');
   let dismissed = false;
+  let replayButton = null;
+  let replaying = false;
+  let seen = false;
 
   try {
-    if (localStorage.getItem(storageKey) === '1') return;
+    seen = localStorage.getItem(storageKey) === '1';
   } catch { /* The intro still works when browser storage is unavailable. */ }
 
   // A browser without dialog support can still enter the adventure normally.
@@ -29,6 +32,10 @@
     video.load();
     dialog.close();
     document.documentElement.classList.remove('intro-is-open');
+    if (replaying && replayButton) {
+      replayButton.focus({ preventScroll: true });
+      return;
+    }
     const heading = document.getElementById('mapTitle');
     if (heading) {
       heading.setAttribute('tabindex', '-1');
@@ -41,7 +48,7 @@
     event.preventDefault();
   });
 
-  start.addEventListener('click', () => {
+  function playVideo() {
     start.disabled = true;
     status.textContent = '';
     video.hidden = false;
@@ -61,7 +68,25 @@
     });
     welcome.hidden = true;
     skip.focus();
+  }
+
+  start.addEventListener('click', playVideo);
+
+  // The intro script runs before the map markup, so bind replay after parsing.
+  document.addEventListener('DOMContentLoaded', () => {
+    replayButton = document.getElementById('replayIntro');
+    if (!replayButton) return;
+    replayButton.addEventListener('click', () => {
+      dismissed = false;
+      replaying = true;
+      skip.textContent = 'Close video';
+      dialog.showModal();
+      document.documentElement.classList.add('intro-is-open');
+      playVideo();
+    });
   });
+
+  if (seen) return;
 
   dialog.showModal();
   document.documentElement.classList.add('intro-is-open');
