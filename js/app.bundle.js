@@ -658,7 +658,7 @@ let lanternWipeDistance = 0;
 // Add purchased codes here. A code is only shown after its matching quest is complete.
 const voucherCodes = {
   ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
-  2: 'MORELE-CODE-1',
+  2: '11919DAC2D',
   3: 'MORELE-CODE-2',
   4: 'MORELE-CODE-3',
   5: 'MORELE-CODE-4',
