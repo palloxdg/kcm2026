@@ -660,7 +660,7 @@ const voucherCodes = {
   ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
   2: '11919DAC2D',
   3: '95E300411E',
-  4: 'MORELE-CODE-3',
+  4: '5F6BCEBD42',
   5: 'MORELE-CODE-4',
   6: 'MORELE-CODE-5',
   7: 'MORELE-CODE-6',
