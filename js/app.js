@@ -19,7 +19,7 @@ const voucherCodes = {
   2: '11919DAC2D',
   3: '95E300411E',
   4: '5F6BCEBD42',
-  5: 'MORELE-CODE-4',
+  5: 'FF253C26F1',
   6: 'MORELE-CODE-5',
   7: 'MORELE-CODE-6',
   8: 'MORELE-CODE-7',
