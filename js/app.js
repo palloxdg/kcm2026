@@ -23,7 +23,7 @@ const voucherCodes = {
   5: 'FF253C26F1',
   6: '492EA19AD4',
   7: '036251A1FD',
-  8: 'MORELE-CODE-7',
+  8: '270C13A192',
   9: 'ZALANDO-CODE-1',
   10: 'ZALANDO-CODE-2',
   11: 'ZALANDO-CODE-3',
