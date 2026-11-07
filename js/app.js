@@ -1,6 +1,7 @@
 import { quests, getQuest } from './data/quests.js';
 import { getAdventureDay, formatAdventureDate } from './date.js';
 import { loadCompleted, saveCompleted } from './storage.js';
+import { notifyQuestCompleted } from './notifications.js';
 
 const day = getAdventureDay();
 const completed = loadCompleted();
@@ -425,6 +426,7 @@ function showReward() {
   if (!activeQuest) return;
   completed.add(activeQuest.id);
   saveCompleted(completed);
+  void notifyQuestCompleted(activeQuest);
   els.rewardIcon.textContent = activeQuest.reward.icon;
   els.rewardDay.textContent = `Day ${activeQuest.day} reward`;
   els.rewardTitle.textContent = activeQuest.reward.title;
