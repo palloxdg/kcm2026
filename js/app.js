@@ -24,7 +24,7 @@ const voucherCodes = {
   6: '492EA19AD4',
   7: '036251A1FD',
   8: '270C13A192',
-  9: 'ZALANDO-CODE-1',
+  9: 'P5CJ-N21J-GUX3-KASN',
   10: 'ZALANDO-CODE-2',
   11: 'ZALANDO-CODE-3',
   12: 'ZALANDO-CODE-4',
