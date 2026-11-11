@@ -65,7 +65,7 @@ const voucherAssignments = [
   { from: 9, to: 15, image: 'assets/art/vouchers/voucher-zalando.png', url: 'https://www.zalando.pl/karty-upominkowe/tylko-dla-ciebie-zzgz000qw-000.html', alt: 'Zalando gift voucher' },
   { from: 16, to: 22, image: 'assets/art/vouchers/voucher-allegro.png', url: 'https://www.morele.net/elektroniczna-karta-podarunkowa-50-zl-976823/', alt: 'Morele electronic gift voucher' },
   { from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png', url: 'https://store.steampowered.com/digitalgiftcards', alt: 'Steam digital gift card' },
-  { from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', url: 'https://fluxee.app/kcm2026/tempvoucher.pdf', alt: 'DTB Stuttgart voucher' }
+  { from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', url: 'https://katesjourney.eu/adventure.html', alt: 'DTB Stuttgart voucher' }
 ];
 const landmarks = [
   { id: 'village-post', day: 1, title: 'A Letter at First Light', region: 'Dawn Harbor', x: 7, y: 88, scene: 'village', sceneArt: './assets/art/scene-day01-dawn-harbor.webp', sceneAlt: 'A golden dawn over a painted harbor village with a red wooden mailbox beside a cottage gate', openSceneArt: './assets/art/scene-day01-dawn-harbor-open.webp', revealBox: { x: 55, y: 43, w: 18, h: 34 }, letterArt: './assets/art/Letter.webp', hotspot: { x: 58.5, y: 48, w: 12, h: 28 }, icon: '💌', reward: 'The First Clue' },
