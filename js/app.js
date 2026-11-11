@@ -52,7 +52,7 @@ const voucherGroups = [
   { title: 'Zalando', from: 9, to: 15, image: 'assets/art/vouchers/voucher-zalando.png' },
   { title: 'Allegro', from: 16, to: 22, image: 'assets/art/vouchers/voucher-allegro.png' },
   { title: 'Steam', from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png' },
-  { title: 'DTB Stuttgart', from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', externalUrl: 'https://fluxee.app/kcm2026/tempvoucher.pdf' }
+  { title: 'DTB Stuttgart', from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', externalUrl: 'https://katesjourney.eu/adventure.html' }
 ];
 const VOUCHER_CODE_PLACEHOLDER = 'Code to be added';
 
