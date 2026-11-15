@@ -1,0 +1,92 @@
+{
+  "title": "My tier list",
+  "tiers": [
+    {
+      "id": "s",
+      "name": "S",
+      "color": "#f2979c"
+    },
+    {
+      "id": "a",
+      "name": "A",
+      "color": "#f5bf8b"
+    },
+    {
+      "id": "b",
+      "name": "B",
+      "color": "#f2dc8b"
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "color": "#b5d99c"
+    },
+    {
+      "id": "d",
+      "name": "D",
+      "color": "#9cc5e7"
+    }
+  ],
+  "placements": {
+    "s": [
+      "tierlistimg/sliwka_naleczowska.png",
+      "tierlistimg/wafelek-prince-polo-milka-knusprige-waffel-milka-45g-mondelez.jpg"
+    ],
+    "a": [
+      "tierlistimg/pierniki_toruńskie.jpg",
+      "tierlistimg/Pawelek.jpeg"
+    ],
+    "b": [],
+    "c": [],
+    "d": []
+  },
+  "version": 1,
+  "publishedAt": "2026-11-15T15:41:16.300Z",
+  "images": [
+    {
+      "id": "tierlistimg/Pawelek.jpeg",
+      "name": "Pawelek",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/Pawelek.jpeg"
+    },
+    {
+      "id": "tierlistimg/czekolada-jedyna-schokolade-jedyna-100g-wedel.jpg",
+      "name": "czekolada jedyna schokolade jedyna 100g wedel",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/czekolada-jedyna-schokolade-jedyna-100g-wedel.jpg"
+    },
+    {
+      "id": "tierlistimg/krowkowa.png",
+      "name": "krowkowa",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/krowkowa.png"
+    },
+    {
+      "id": "tierlistimg/pierniki-torunskie-sliwka-lebkuchen-mit-pflaumenfuellung-150g-kopernik.jpg",
+      "name": "pierniki torunskie sliwka lebkuchen mit pflaumenfuellung 150g kopernik",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/pierniki-torunskie-sliwka-lebkuchen-mit-pflaumenfuellung-150g-kopernik.jpg"
+    },
+    {
+      "id": "tierlistimg/pierniki_toruńskie.jpg",
+      "name": "pierniki toruńskie",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/pierniki_toruńskie.jpg"
+    },
+    {
+      "id": "tierlistimg/ptasie-mleczko-slony-karmel-marshmallow-340g-wedel.jpg",
+      "name": "ptasie mleczko slony karmel marshmallow 340g wedel",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/ptasie-mleczko-slony-karmel-marshmallow-340g-wedel.jpg"
+    },
+    {
+      "id": "tierlistimg/sliwka_naleczowska.png",
+      "name": "sliwka naleczowska",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/sliwka_naleczowska.png"
+    },
+    {
+      "id": "tierlistimg/torunskie_2.jpeg",
+      "name": "torunskie 2",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/torunskie_2.jpeg"
+    },
+    {
+      "id": "tierlistimg/wafelek-prince-polo-milka-knusprige-waffel-milka-45g-mondelez.jpg",
+      "name": "wafelek prince polo milka knusprige waffel milka 45g mondelez",
+      "url": "https://raw.githubusercontent.com/palloxdg/kcm2026/main/tierlistimg/wafelek-prince-polo-milka-knusprige-waffel-milka-45g-mondelez.jpg"
+    }
+  ]
+}
