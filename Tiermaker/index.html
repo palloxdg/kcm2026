@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14151c">
+  <title>The ranking room · Tier list</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><a class="brand" href="./"><span class="brand-icon">▥</span> THE RANKING ROOM</a><span class="local-badge">Saved on this device</span></header>
+    <section class="intro"><div><p class="eyebrow">YOUR PICKS. YOUR RULES.</p><h1>Some things deserve<br>their own tier.</h1><p class="subtitle">Drag your images into place. Make the tough calls.</p></div><div class="intro-mark" aria-hidden="true">S<span>★</span></div></section>
+    <section class="workspace" aria-label="Tier list editor">
+      <div class="toolbar"><input id="title" aria-label="Tier list title" value="My tier list" maxlength="100"><div class="actions"><button id="reset">Reset rankings</button><button id="export" class="primary">↓ Export PNG</button></div></div>
+      <div id="board" aria-label="Ranked tiers"></div>
+      <button id="add-tier" class="add-tier">＋ Add a tier</button>
+    </section>
+    <section class="pool-section"><div class="pool-heading"><div><p class="eyebrow">THE CONTENDERS</p><h2>Unranked <span id="count">0</span></h2></div><button id="reload">↻ Refresh images</button></div><p class="hint">Drag to rank, or select an image and then select a tier. Use arrow buttons to reorder a selected image.</p><div id="pool" class="dropzone pool" data-tier="pool" aria-label="Unranked images"></div><button id="unrank" hidden>Return selected image to unranked</button><p id="status" role="status" aria-live="polite"></p></section>
+    <footer><span>A place for every opinion.</span><span id="progress">Ready when you are.</span></footer>
+  </main>
+  <dialog id="tier-dialog"><form method="dialog"><h2>Edit tier</h2><label>Label<input id="tier-name" maxlength="40" required></label><label>Label color<input id="tier-color" type="color"></label><div class="dialog-actions"><button id="delete-tier" type="button">Delete tier</button><button value="cancel" formnovalidate>Cancel</button><button id="save-tier" value="save" class="primary">Save</button></div></form></dialog>
+</body>
+</html>
