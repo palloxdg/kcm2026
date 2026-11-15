@@ -57,7 +57,8 @@ async function initialize() {
   document.body.classList.toggle('editor',EDIT_MODE);
   $('#title').readOnly=!EDIT_MODE;
   $('.local-badge').textContent=EDIT_MODE?'Editor draft on this device':'Published ranking';
-  $('.subtitle').textContent=EDIT_MODE?'Arrange your list, then download ranking.json to publish.':'The latest published picks, all in one place.';
+  const subtitle = $('.subtitle');
+  if (subtitle) subtitle.textContent=EDIT_MODE?'Arrange your list, then download ranking.json to publish.':'The latest published picks, all in one place.';
   $('.hint').textContent=EDIT_MODE?'Drag to rank, or select an image and then select a tier. Use left/right arrow keys to reorder.':'Everyone sees the same published ranking.';
   $('#editor-link').href=EDIT_MODE?'./':'?edit=1';
   $('#editor-link').textContent=EDIT_MODE?'View published list':'Edit / publish';
