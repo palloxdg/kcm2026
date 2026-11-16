@@ -16,7 +16,34 @@ let lanternWipeDistance = 0;
 // Add purchased codes here. A code is only shown after its matching quest is complete.
 const voucherCodes = {
   ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
-  1: 'TEST-CODE-1'
+  2: '11919DAC2D',
+  3: '95E300411E',
+  4: '5F6BCEBD42',
+  5: 'FF253C26F1',
+  6: '492EA19AD4',
+  7: '036251A1FD',
+  8: '270C13A192',
+  9: 'P5CJ-N21J-GUX3-KASN',
+  10: 'P3LE-ZHAX-ZMHV-YNSX',
+  11: 'P4SU-2KVC-NJNJ-ATHR',
+  12: 'P4RT-2YFX-WWG3-2DK4',
+  13: 'P59X-DL5L-JEZZ-JYLF',
+  14: 'P7A9-74XH-V7HU-U7WS',
+  15: 'P46P-CF3Z-S2LX-NDMT',
+  16: 'dXN5ydwoJHUx',
+  17: 'ALLEGRO-CODE-2',
+  18: 'ALLEGRO-CODE-3',
+  19: 'ALLEGRO-CODE-4',
+  20: 'ALLEGRO-CODE-5',
+  21: 'ALLEGRO-CODE-6',
+  22: 'ALLEGRO-CODE-7',
+  23: 'STEAM-CODE-1',
+  24: 'STEAM-CODE-2',
+  25: 'STEAM-CODE-3',
+  26: 'STEAM-CODE-4',
+  27: 'STEAM-CODE-5',
+  28: 'STEAM-CODE-6',
+  29: 'STEAM-CODE-7'
 };
 const voucherGroups = [
   { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF.html' },
