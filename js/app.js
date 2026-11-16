@@ -1,6 +1,7 @@
 import { quests, getQuest } from './data/quests.js';
 import { getAdventureDay, formatAdventureDate } from './date.js';
 import { loadCompleted, saveCompleted } from './storage.js';
+import { notifyVoucherOpened } from './notifications.js';
 
 const day = getAdventureDay();
 const completed = loadCompleted();
@@ -539,6 +540,7 @@ function openVoucherParchment(group, selectedDay = null) {
 
 function openRewardVoucher() {
   if (!activeQuest || !completed.has(activeQuest.id)) return;
+  void notifyVoucherOpened(activeQuest);
   const group = voucherGroups.find(item => activeQuest.day >= item.from && activeQuest.day <= item.to);
   if (group?.externalUrl) {
     window.open(group.externalUrl, '_blank', 'noopener,noreferrer');
