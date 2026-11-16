@@ -1,66 +1,83 @@
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xkjjaznd';
-const NOTIFIED_QUESTS_KEY = 'kcm2026.notifiedQuests';
+const STORAGE_KEY = 'kcm2026.notifiedQuests';
+const inFlight = new Set();
 
-function notificationsAreDisabled() {
-  const host = window.location.hostname.toLowerCase();
-  const isLocal = host === 'localhost' || host === '127.0.0.1' || host === '';
-  const isDebugDay = new URLSearchParams(window.location.search).has('day');
-  return isLocal || isDebugDay;
-}
-
-function loadNotifiedQuests() {
+function loadNotified() {
   try {
-    const stored = JSON.parse(localStorage.getItem(NOTIFIED_QUESTS_KEY) || '[]');
-    return new Set(Array.isArray(stored) ? stored : []);
+    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    return new Set(Array.isArray(value) ? value : []);
   } catch {
     return new Set();
   }
 }
 
-function saveNotifiedQuests(notified) {
+function saveNotified(notified) {
   try {
-    localStorage.setItem(NOTIFIED_QUESTS_KEY, JSON.stringify([...notified]));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...notified]));
   } catch {
-    // A blocked localStorage should not interrupt the reward experience.
+    // Notifications must never interrupt the adventure.
   }
 }
 
-export async function notifyVoucherOpened(quest) {
-  if (!quest || notificationsAreDisabled()) return false;
+function formatOpenedAt(date = new Date()) {
+  return new Intl.DateTimeFormat('en-GB', {
+    dateStyle: 'full',
+    timeStyle: 'long',
+    timeZone: 'Europe/Berlin'
+  }).format(date);
+}
 
-  const notified = loadNotifiedQuests();
-  if (notified.has(quest.id)) return false;
+function isDevelopmentVisit() {
+  const hostname = window.location.hostname;
+
+  return (
+    new URLSearchParams(window.location.search).has('day') ||
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === ''
+  );
+}
+
+export async function notifyQuestCompleted(quest) {
+  if (!quest?.id || isDevelopmentVisit()) return false;
+
+  const notified = loadNotified();
+
+  if (notified.has(quest.id) || inFlight.has(quest.id)) {
+    return false;
+  }
+
+  inFlight.add(quest.id);
 
   try {
-    const openedAt = new Intl.DateTimeFormat('en-GB', {
-      dateStyle: 'full',
-      timeStyle: 'long',
-      timeZone: 'Europe/Berlin'
-    }).format(new Date());
-
     const response = await fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
+      keepalive: true,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        subject: `Kate opened Day ${quest.day}`,
+        _subject: `Kate opened Day ${quest.day} 🎁`,
+        event: 'quest_completed',
         day: quest.day,
         quest: quest.title,
-        questId: quest.id,
-        openedAt,
-        page: window.location.href
+        region: quest.region,
+        opened_at: formatOpenedAt(),
+        site: window.location.origin,
+        _gotcha: ''
       })
     });
 
     if (!response.ok) return false;
 
     notified.add(quest.id);
-    saveNotifiedQuests(notified);
+    saveNotified(notified);
+
     return true;
   } catch {
-    // Notification failures remain invisible to Kate and do not block the popup.
     return false;
+  } finally {
+    inFlight.delete(quest.id);
   }
 }
