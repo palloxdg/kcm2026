@@ -1,7 +1,6 @@
 import { quests, getQuest } from './data/quests.js';
 import { getAdventureDay, formatAdventureDate } from './date.js';
 import { loadCompleted, saveCompleted } from './storage.js';
-import { notifyQuestCompleted } from './notifications.js';
 
 const day = getAdventureDay();
 const completed = loadCompleted();
@@ -9,7 +8,6 @@ let activeQuest = null;
 let journalPage = 0;
 let journalImageIndex = 0;
 let easterEggVisible = false;
-let finaleScrollFrame = null;
 let lanternDrag = null;
 let lanternProgress = 0;
 let lanternWipeDistance = 0;
@@ -17,34 +15,7 @@ let lanternWipeDistance = 0;
 // Add purchased codes here. A code is only shown after its matching quest is complete.
 const voucherCodes = {
   ...Object.fromEntries(quests.map(quest => [quest.day, 'Code to be added'])),
-  2: '11919DAC2D',
-  3: '95E300411E',
-  4: '5F6BCEBD42',
-  5: 'FF253C26F1',
-  6: '492EA19AD4',
-  7: '036251A1FD',
-  8: '270C13A192',
-  9: 'P5CJ-N21J-GUX3-KASN',
-  10: 'P3LE-ZHAX-ZMHV-YNSX',
-  11: 'P4SU-2KVC-NJNJ-ATHR',
-  12: 'P4RT-2YFX-WWG3-2DK4',
-  13: 'P59X-DL5L-JEZZ-JYLF',
-  14: 'P7A9-74XH-V7HU-U7WS',
-  15: 'P46P-CF3Z-S2LX-NDMT',
-  16: 'dXN5ydwoJHUx',
-  17: 'ALLEGRO-CODE-2',
-  18: 'ALLEGRO-CODE-3',
-  19: 'ALLEGRO-CODE-4',
-  20: 'ALLEGRO-CODE-5',
-  21: 'ALLEGRO-CODE-6',
-  22: 'ALLEGRO-CODE-7',
-  23: 'STEAM-CODE-1',
-  24: 'STEAM-CODE-2',
-  25: 'STEAM-CODE-3',
-  26: 'STEAM-CODE-4',
-  27: 'STEAM-CODE-5',
-  28: 'STEAM-CODE-6',
-  29: 'STEAM-CODE-7'
+  1: 'TEST-CODE-1'
 };
 const voucherGroups = [
   { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF.html' },
@@ -52,7 +23,7 @@ const voucherGroups = [
   { title: 'Zalando', from: 9, to: 15, image: 'assets/art/vouchers/voucher-zalando.png' },
   { title: 'Allegro', from: 16, to: 22, image: 'assets/art/vouchers/voucher-allegro.png' },
   { title: 'Steam', from: 23, to: 29, image: 'assets/art/vouchers/voucher-steam.png' },
-  { title: 'DTB Stuttgart', from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', externalUrl: 'https://katesjourney.eu/adventure.html' }
+  { title: 'DTB Stuttgart', from: 30, to: 30, image: 'assets/art/vouchers/voucher-DTB_Stuttgart.png', externalUrl: 'https://fluxee.app/kcm2026/tempvoucher.pdf' }
 ];
 const VOUCHER_CODE_PLACEHOLDER = 'Code to be added';
 
@@ -123,7 +94,7 @@ function render() {
   els.discoveryPercent.textContent = `${progress}%`;
   els.discoveryBar.style.width = `${progress}%`;
   els.mapHint.textContent = day === 0
-    ? 'The first quest marker appears on November 1, 2026.'
+    ? 'The first quest marker appears on November 1, 2026. Try ?day=12 while building.'
     : 'Choose any available marker to begin a quest.';
   renderMarkers();
 }
@@ -372,40 +343,15 @@ function revealEasterEgg() {
   showFinaleText();
 }
 
-// Scroll slowly from below the frame and leave the final words visible.
+// Show the closing story immediately; readers scroll at their own pace.
 function hideFinaleText() {
-  cancelAnimationFrame(finaleScrollFrame);
-  finaleScrollFrame = null;
   $('#finaleText').hidden = true;
-  $('#finaleText').classList.remove('is-scrolling');
 }
 
 function showFinaleText() {
-  hideFinaleText();
   const panel = $('#finaleText');
   panel.hidden = false;
   panel.scrollTop = 0;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      || document.body.classList.contains('reduced-motion')) return;
-  panel.classList.add('is-scrolling');
-  let previous = null;
-  const begins = performance.now() + 1000;
-  let position = 0;
-  const scroll = now => {
-    if (panel.hidden) return;
-    const elapsed = previous === null ? 0 : Math.min(now - previous, 100);
-    previous = now;
-    if (now >= begins && !panel.matches(':hover, :focus-within')) {
-      position += elapsed * 0.016;
-      panel.scrollTop = position;
-    } else {
-      position = panel.scrollTop;
-    }
-    if (panel.scrollTop < panel.scrollHeight - panel.clientHeight - 1) {
-      finaleScrollFrame = requestAnimationFrame(scroll);
-    }
-  };
-  finaleScrollFrame = requestAnimationFrame(scroll);
 }
 
 function showLetter() {
@@ -426,7 +372,6 @@ function showReward() {
   if (!activeQuest) return;
   completed.add(activeQuest.id);
   saveCompleted(completed);
-  void notifyQuestCompleted(activeQuest);
   els.rewardIcon.textContent = activeQuest.reward.icon;
   els.rewardDay.textContent = `Day ${activeQuest.day} reward`;
   els.rewardTitle.textContent = activeQuest.reward.title;
