@@ -31,7 +31,7 @@ const voucherCodes = {
   14: 'P7A9-74XH-V7HU-U7WS',
   15: 'P46P-CF3Z-S2LX-NDMT',
   16: 'dXN5ydwoJHUx',
-  17: 'ALLEGRO-CODE-2',
+  17: 'UAjwDCnDpKjD',
   18: 'ALLEGRO-CODE-3',
   19: 'ALLEGRO-CODE-4',
   20: 'ALLEGRO-CODE-5',
