@@ -33,7 +33,7 @@ const voucherCodes = {
   16: 'dXN5ydwoJHUx',
   17: 'UAjwDCnDpKjD',
   18: 'bjUnTaHsVN2X',
-  19: 'ALLEGRO-CODE-4',
+  19: 'KWe5wXDqbfFY',
   20: 'ALLEGRO-CODE-5',
   21: 'ALLEGRO-CODE-6',
   22: 'ALLEGRO-CODE-7',
