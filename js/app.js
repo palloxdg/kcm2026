@@ -220,6 +220,11 @@ function handleObjectInteraction() {
   const isAlreadyOpen = els.sceneStage.classList.contains('is-object-open');
 
   if (!hasOpenState || isAlreadyOpen) {
+    if (activeQuest.day === 30 && activeQuest.easterEggArt && !easterEggVisible) {
+      revealEasterEgg();
+      els.hotspot.focus();
+      return;
+    }
     showReward();
     return;
   }
@@ -232,7 +237,7 @@ function handleObjectInteraction() {
       showLetter();
     } else {
       els.hotspot.disabled = false;
-      showReward();
+      if (activeQuest.day !== 30 || !activeQuest.easterEggArt) showReward();
     }
   }, activeQuest.letterArt ? 3000 : 2900);
 }
