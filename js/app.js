@@ -35,7 +35,7 @@ const voucherCodes = {
   18: 'bjUnTaHsVN2X',
   19: 'KWe5wXDqbfFY',
   20: 'HEUeLJhg7x2p',
-  21: 'ALLEGRO-CODE-6',
+  21: 'zLZBJEcwZ3do6',
   22: 'ALLEGRO-CODE-7',
   23: 'STEAM-CODE-1',
   24: 'STEAM-CODE-2',
