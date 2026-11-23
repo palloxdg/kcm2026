@@ -38,7 +38,7 @@ const voucherCodes = {
   21: 'zLZBJEcwZ3do6',
   22: 'tvHwxq2pUY39',
   23: 'YL4AB-0QELB-4JZXB',
-  24: 'STEAM-CODE-2',
+  24: 'QWN8Q-W6IY7-EGBRF',
   25: 'STEAM-CODE-3',
   26: 'STEAM-CODE-4',
   27: 'STEAM-CODE-5',
