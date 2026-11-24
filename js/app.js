@@ -35,10 +35,10 @@ const voucherCodes = {
   18: 'bjUnTaHsVN2X',
   19: 'KWe5wXDqbfFY',
   20: 'HEUeLJhg7x2p',
-  21: 'zLZBJEcwZ3do6',
-  22: 'tvHwxq2pUY39',
-  23: 'YL4AB-0QELB-4JZXB',
-  24: 'QWN8Q-W6IY7-EGBRF',
+  21: 'ALLEGRO-CODE-6',
+  22: 'ALLEGRO-CODE-7',
+  23: 'STEAM-CODE-1',
+  24: 'STEAM-CODE-2',
   25: 'STEAM-CODE-3',
   26: 'STEAM-CODE-4',
   27: 'STEAM-CODE-5',
@@ -373,7 +373,6 @@ function revealEasterEgg() {
   if (!activeQuest?.easterEggArt || !els.sceneStage.classList.contains('is-object-open')) return;
   els.sceneOpenArt.src = activeQuest.easterEggArt;
   easterEggVisible = true;
-  showFinaleText();
 }
 
 // Show the closing story immediately; readers scroll at their own pace.
