@@ -42,7 +42,7 @@ const voucherCodes = {
   25: 'FQNLP-M4CPT-QXYER',
   26: 'KF6ZF-9WPA5-9FV3A',
   27: '9EHMA-9F9FM-N383X',
-  28: 'STEAM-CODE-6',
+  28: 'KK7HD-G4CJK-ZZD0K',
   29: 'STEAM-CODE-7'
 };
 const voucherGroups = [
