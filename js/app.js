@@ -43,7 +43,7 @@ const voucherCodes = {
   26: 'KF6ZF-9WPA5-9FV3A',
   27: '9EHMA-9F9FM-N383X',
   28: 'KK7HD-G4CJK-ZZD0K',
-  29: 'STEAM-CODE-7'
+  29: 'ZJ9HF-0DB6X-67TYJ'
 };
 const voucherGroups = [
   { title: 'Wild Horse Fund', from: 1, to: 1, image: 'assets/art/vouchers/voucher-cwhf.png', externalUrl: 'https://fluxee.app/kcm2026/CWHF.html' },
